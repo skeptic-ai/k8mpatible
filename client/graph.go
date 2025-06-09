@@ -1,4 +1,4 @@
-package main
+package client
 
 import (
 	"github.com/Masterminds/semver/v3"

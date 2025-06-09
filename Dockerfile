@@ -42,4 +42,3 @@ USER appuser
 
 # Set the entrypoint
 ENTRYPOINT ["./worker"]
-CMD ["-mode", "worker"]

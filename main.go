@@ -4,6 +4,7 @@ import (
 	"flag"
 	"log"
 
+	"github.com/skeptic-ai/k8mpatible/client"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
@@ -14,8 +15,8 @@ func main() {
 	flag.Parse()
 
 	var config *rest.Config
-	CreateMergeGraph()
-	graph, graphErr := LoadGraphFromYAML("merged_output.yaml")
+	client.CreateMergeGraph()
+	graph, graphErr := client.LoadGraphFromYAML("merged_output.yaml")
 	if graphErr != nil {
 		log.Fatalf("Failed to load compatibility graph: %v", graphErr)
 	}
@@ -36,6 +37,6 @@ func main() {
 	if clienterr != nil {
 		log.Fatalf("Failed to create Kubernetes client: %v", clienterr)
 	}
-	ScanCluster(clientset, graph)
+	client.ScanCluster(clientset, graph)
 
 }
