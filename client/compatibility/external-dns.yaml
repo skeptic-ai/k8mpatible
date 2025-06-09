@@ -1,0 +1,106 @@
+nodes:
+  - name: external-dns
+    docUrl: https://github.com/kubernetes-sigs/external-dns
+    kubernetesResource:
+      - name: external-dns
+        namespace: external-dns
+        type: deployment
+
+edges:
+  # External-DNS >= 0.10 compatibility
+  - source: external-dns
+    sourceVersion: 0.16
+    destination: Kubernetes
+    versionRange: ">=1.19"
+    compatible: true
+  - source: external-dns
+    sourceVersion: 0.16
+    destination: Kubernetes
+    versionRange: "<=1.18"
+    compatible: false
+    reason: "Breaking change in external-dns v0.10 makes it incompatible with Kubernetes <= 1.18"
+
+  - source: external-dns
+    sourceVersion: 0.15
+    destination: Kubernetes
+    versionRange: ">=1.19"
+    compatible: true
+  - source: external-dns
+    sourceVersion: 0.15
+    destination: Kubernetes
+    versionRange: "<=1.18"
+    compatible: false
+    reason: "Breaking change in external-dns v0.10 makes it incompatible with Kubernetes <= 1.18"
+
+  - source: external-dns
+    sourceVersion: 0.14
+    destination: Kubernetes
+    versionRange: ">=1.19"
+    compatible: true
+  - source: external-dns
+    sourceVersion: 0.14
+    destination: Kubernetes
+    versionRange: "<=1.18"
+    compatible: false
+    reason: "Breaking change in external-dns v0.10 makes it incompatible with Kubernetes <= 1.18"
+
+  - source: external-dns
+    sourceVersion: 0.13
+    destination: Kubernetes
+    versionRange: ">=1.19"
+    compatible: true
+  - source: external-dns
+    sourceVersion: 0.13
+    destination: Kubernetes
+    versionRange: "<=1.18"
+    compatible: false
+    reason: "Breaking change in external-dns v0.10 makes it incompatible with Kubernetes <= 1.18"
+
+  - source: external-dns
+    sourceVersion: 0.12
+    destination: Kubernetes
+    versionRange: ">=1.19"
+    compatible: true
+  - source: external-dns
+    sourceVersion: 0.12
+    destination: Kubernetes
+    versionRange: "<=1.18"
+    compatible: false
+    reason: "Breaking change in external-dns v0.10 makes it incompatible with Kubernetes <= 1.18"
+
+  - source: external-dns
+    sourceVersion: 0.11
+    destination: Kubernetes
+    versionRange: ">=1.19"
+    compatible: true
+  - source: external-dns
+    sourceVersion: 0.11
+    destination: Kubernetes
+    versionRange: "<=1.18"
+    compatible: false
+    reason: "Breaking change in external-dns v0.10 makes it incompatible with Kubernetes <= 1.18"
+
+  - source: external-dns
+    sourceVersion: 0.10
+    destination: Kubernetes
+    versionRange: ">=1.19"
+    compatible: true
+  - source: external-dns
+    sourceVersion: 0.10
+    destination: Kubernetes
+    versionRange: "<=1.18"
+    compatible: false
+    reason: "Breaking change in external-dns v0.10 makes it incompatible with Kubernetes <= 1.18"
+
+  # External-DNS <= 0.9 compatibility
+  - source: external-dns
+    sourceVersion: 0.9
+    destination: Kubernetes
+    versionRange: "<=1.21"
+    compatible: true
+  - source: external-dns
+    sourceVersion: 0.9
+    destination: Kubernetes
+    versionRange: ">=1.22"
+    compatible: false
+    reason: "External-DNS <= 0.9 is not compatible with Kubernetes >= 1.22"

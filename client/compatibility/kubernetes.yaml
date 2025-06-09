@@ -1,0 +1,7 @@
+nodes:
+  - name: Kubernetes
+    docUrl: "n/a"
+    kubernetesResource:
+      - name: kube-proxy
+        namespace: kube-system
+        type: daemonset

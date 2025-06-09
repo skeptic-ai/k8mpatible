@@ -1,0 +1,92 @@
+nodes:
+  - name: Istio
+    docUrl: https://istio.io/latest/docs/releases/supported-releases/#support-status-of-istio-releases
+    kubernetesResource:
+      - name: istiod
+        namespace: istio-system
+        type: deployment
+
+edges:
+  - source: istio
+    sourceVersion: 1.26
+    destination: Kubernetes
+    versionRange: ">=1.29, <=1.32"
+    compatible: true
+
+  - source: istio
+    sourceVersion: 1.25
+    destination: Kubernetes
+    versionRange: ">=1.29, <=1.32"
+    compatible: true
+
+  - source: istio
+    sourceVersion: 1.24
+    destination: Kubernetes
+    versionRange: ">=1.28, <=1.31"
+    compatible: true
+
+  - source: istio
+    sourceVersion: 1.23
+    destination: Kubernetes
+    versionRange: ">=1.27, <=1.30"
+    compatible: true
+
+  - source: istio
+    sourceVersion: 1.22
+    destination: Kubernetes
+    versionRange: ">=1.27, <=1.30"
+    compatible: true
+
+  - source: istio
+    sourceVersion: 1.21
+    destination: Kubernetes
+    versionRange: ">=1.26, <=1.29"
+    compatible: true
+
+  - source: istio
+    sourceVersion: 1.20
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.29"
+    compatible: true
+
+  - source: istio
+    sourceVersion: 1.19
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.28"
+    compatible: true
+
+  - source: istio
+    sourceVersion: 1.18
+    destination: Kubernetes
+    versionRange: ">=1.24, <=1.27"
+    compatible: true
+
+  - source: istio
+    sourceVersion: 1.17
+    destination: Kubernetes
+    versionRange: ">=1.23, <=1.26"
+    compatible: true
+
+  - source: istio
+    sourceVersion: 1.16
+    destination: Kubernetes
+    versionRange: ">=1.22, <=1.25"
+    compatible: true
+
+  - source: istio
+    sourceVersion: 1.15
+    destination: Kubernetes
+    versionRange: ">=1.22, <=1.25"
+    compatible: true
+
+  - source: istio
+    sourceVersion: 1.14
+    destination: Kubernetes
+    versionRange: ">=1.21, <=1.24"
+    compatible: true
+
+  - source: istio
+    sourceVersion: 1.13
+    destination: Kubernetes
+    versionRange: ">=1.20, <=1.23"
+    compatible: true

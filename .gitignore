@@ -19,3 +19,8 @@
 
 # Go workspace file
 go.work
+storage
+__pycache__
+
+# k8mpatible_working_files
+**/merged_output.yaml

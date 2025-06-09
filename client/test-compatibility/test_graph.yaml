@@ -1,0 +1,22 @@
+nodes:
+  - name: Istio
+  - name: Prometheus
+  - name: Kubernetes
+    kubernetesResource:
+      - name: kube-proxy
+        namespace: kube-system
+        type: daemonset
+
+edges:
+  - source: Istio
+    sourceVersion: 1.9
+    destination: Prometheus
+    versionRange: ">=2.0, <3.0"
+    compatible: true
+    reason: ""
+  - source: Istio
+    sourceVersion: 1.10
+    destination: Prometheus
+    versionRange: ">=2.0, <2.26"
+    compatible: false
+    reason: Known issue with X feature

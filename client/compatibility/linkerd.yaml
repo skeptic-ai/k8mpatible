@@ -1,0 +1,44 @@
+nodes:
+  - name: Linkerd
+    docUrl: https://linkerd.io/2-edge/reference/k8s-versions/
+    kubernetesResource:
+      - name: linkerd-controller
+        namespace: linkerd
+        type: deployment
+
+edges:
+  - source: Linkerd
+    sourceVersion: 2.18
+    destination: Kubernetes
+    versionRange: ">=1.22, <=1.32"
+    compatible: true
+  - source: Linkerd
+    sourceVersion: 2.17
+    destination: Kubernetes
+    versionRange: ">=1.22, <=1.31"
+    compatible: true
+  - source: Linkerd
+    sourceVersion: 2.16
+    destination: Kubernetes
+    versionRange: ">=1.22, <=1.29"
+    compatible: true
+  - source: Linkerd
+    sourceVersion: 2.15
+    destination: Kubernetes
+    versionRange: ">=1.22, <=1.29"
+    compatible: true
+  - source: Linkerd
+    sourceVersion: 2.14
+    destination: Kubernetes
+    versionRange: ">=1.21, <=1.28"
+    compatible: true
+  - source: Linkerd
+    sourceVersion: 2.13
+    destination: Kubernetes
+    versionRange: ">=1.21, <=1.28"
+    compatible: true
+  - source: Linkerd
+    sourceVersion: 2.12
+    destination: Kubernetes
+    versionRange: ">=1.21, <=1.28"
+    compatible: true
