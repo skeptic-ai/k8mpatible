@@ -1,7 +1,9 @@
 package client
 
 import (
+	"embed"
 	"fmt"
+	"io/fs"
 	"log"
 	"os"
 	"path/filepath"
@@ -9,33 +11,69 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+//go:embed compatibility/*.yaml
+var compatibilityFS embed.FS
+
 func merge2(dir string) (*Graph, error) {
 	mergedGraph := Graph{}
 
-	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-
-		// Only process YAML files
-		if !info.IsDir() && (filepath.Ext(path) == ".yaml" || filepath.Ext(path) == ".yml") {
-			graph, grapErr := LoadGraphFromYAML(path)
-			if grapErr != nil {
-				log.Fatalf("Failed to load compatibility graph: %v", grapErr)
+	// Check if we're using embedded files or filesystem
+	if dir == "embedded" {
+		// Use embedded files
+		err := fs.WalkDir(compatibilityFS, "compatibility", func(path string, d fs.DirEntry, err error) error {
+			if err != nil {
+				return err
 			}
-			mergedGraph.Edges = append(mergedGraph.Edges, graph.Edges...)
-			mergedGraph.Nodes = append(mergedGraph.Nodes, graph.Nodes...)
 
+			// Only process YAML files
+			if !d.IsDir() && (filepath.Ext(path) == ".yaml" || filepath.Ext(path) == ".yml") {
+				data, readErr := compatibilityFS.ReadFile(path)
+				if readErr != nil {
+					return readErr
+				}
+
+				var graph Graph
+				unmarshalErr := yaml.Unmarshal(data, &graph)
+				if unmarshalErr != nil {
+					return unmarshalErr
+				}
+
+				mergedGraph.Edges = append(mergedGraph.Edges, graph.Edges...)
+				mergedGraph.Nodes = append(mergedGraph.Nodes, graph.Nodes...)
+			}
+
+			return nil
+		})
+
+		if err != nil {
+			return nil, err
 		}
+	} else {
+		// Use filesystem
+		err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
+			if err != nil {
+				return err
+			}
 
-		return nil
-	})
+			// Only process YAML files
+			if !info.IsDir() && (filepath.Ext(path) == ".yaml" || filepath.Ext(path) == ".yml") {
+				graph, grapErr := LoadGraphFromYAML(path)
+				if grapErr != nil {
+					log.Fatalf("Failed to load compatibility graph: %v", grapErr)
+				}
+				mergedGraph.Edges = append(mergedGraph.Edges, graph.Edges...)
+				mergedGraph.Nodes = append(mergedGraph.Nodes, graph.Nodes...)
+			}
 
-	if err != nil {
-		return nil, err
+			return nil
+		})
+
+		if err != nil {
+			return nil, err
+		}
 	}
-	return &mergedGraph, nil
 
+	return &mergedGraph, nil
 }
 
 // MergeYamlFiles merges all YAML files in a directory into one map
@@ -99,13 +137,20 @@ func SaveMergedYaml(data *Graph, outputPath string) error {
 }
 
 func CreateMergeGraph() {
-	dir := "./compatibility" // Change this to your YAML directory path
 	outputPath := "merged_output.yaml"
 
-	// Merge YAML files
-	mergedData, err := merge2(dir)
+	// Try to use embedded files first
+	mergedData, err := merge2("embedded")
 	if err != nil {
-		log.Fatalf("Error merging YAML files: %v", err)
+		// Fall back to filesystem if embedded files fail
+		fmt.Printf("Using filesystem compatibility files: %v\n", err)
+		dir := "./compatibility"
+		mergedData, err = merge2(dir)
+		if err != nil {
+			log.Fatalf("Error merging YAML files: %v", err)
+		}
+	} else {
+		fmt.Println("Using embedded compatibility files")
 	}
 
 	// Save merged YAML to output file
