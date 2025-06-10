@@ -15,6 +15,31 @@ k8mpatible is a tool that helps you manage compatibility between different tools
 
 ### Installation
 
+#### Option 1: Download pre-built binary (recommended)
+
+```bash
+# For Linux (x86_64)
+curl -L https://github.com/skeptic-ai/k8mpatible/releases/download/v0.1.2/k8mpatible_0.1.2_Linux_x86_64.tar.gz | tar xz
+sudo mv k8mpatible /usr/local/bin/
+
+# For macOS (x86_64)
+curl -L https://github.com/skeptic-ai/k8mpatible/releases/download/v0.1.2/k8mpatible_0.1.2_Darwin_x86_64.tar.gz | tar xz
+sudo mv k8mpatible /usr/local/bin/
+
+# For macOS (arm64/Apple Silicon)
+curl -L https://github.com/skeptic-ai/k8mpatible/releases/download/v0.1.2/k8mpatible_0.1.2_Darwin_arm64.tar.gz | tar xz
+sudo mv k8mpatible /usr/local/bin/
+
+# For Windows (PowerShell)
+Invoke-WebRequest -Uri https://github.com/skeptic-ai/k8mpatible/releases/download/v0.1.2/k8mpatible_0.1.2_Windows_x86_64.zip -OutFile k8mpatible.zip
+Expand-Archive -Path k8mpatible.zip -DestinationPath .
+# Move k8mpatible.exe to a directory in your PATH
+```
+
+You can also manually download the appropriate binary for your platform from the [GitHub Releases page](https://github.com/skeptic-ai/k8mpatible/releases/latest).
+
+#### Option 2: Build from source
+
 ```bash
 # Clone the repository
 git clone https://github.com/skeptic-ai/k8mpatible.git
@@ -107,4 +132,3 @@ k8mpatible currently supports the following tools:
 - Add more tools
 - Check compatibility of tools with node operating systems
 - Support for more Kubernetes resource types for tool discovery
-
