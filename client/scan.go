@@ -2,8 +2,10 @@ package client
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/Masterminds/semver/v3"
+	"gopkg.in/yaml.v3"
 	"k8s.io/client-go/kubernetes"
 )
 
@@ -19,6 +21,70 @@ func ScanCluster(clientset *kubernetes.Clientset, graph *Graph) []DiscoveredTool
 	planToolVersion(Kubernetes, &nextVersion, graph, discoveredTools)
 	Logger.Info("tool upgrade plan completed", "tools", discoveredTools)
 	return discoveredTools
+}
+
+// ScanResults represents the structure of the scan results
+type ScanResults struct {
+	Tools   []DiscoveredTool `yaml:"tools"`
+	Summary struct {
+		TotalTools               int `yaml:"totalTools"`
+		IncompatibleTools        int `yaml:"incompatibleTools"`
+		UpgradeIncompatibleTools int `yaml:"upgradeIncompatibleTools"`
+	} `yaml:"summary"`
+}
+
+// FormatScanResultsAsYAML formats the scan results as YAML and returns the YAML data
+func FormatScanResultsAsYAML(tools []DiscoveredTool) ([]byte, *ScanResults, error) {
+	// Create the scan results
+	results := &ScanResults{
+		Tools: tools,
+	}
+
+	// Calculate summary statistics
+	results.Summary.TotalTools = len(tools)
+
+	incompatibleTools := 0
+	upgradeIncompatibleTools := 0
+
+	for _, tool := range tools {
+		if len(tool.CurrentIncompatibility) > 0 {
+			incompatibleTools++
+		}
+		if len(tool.UpgradeIncompatibility) > 0 {
+			upgradeIncompatibleTools++
+		}
+	}
+
+	results.Summary.IncompatibleTools = incompatibleTools
+	results.Summary.UpgradeIncompatibleTools = upgradeIncompatibleTools
+
+	// Marshal the scan results to YAML
+	yamlData, err := yaml.Marshal(results)
+	if err != nil {
+		return nil, nil, fmt.Errorf("failed to marshal scan results to YAML: %v", err)
+	}
+
+	return yamlData, results, nil
+}
+
+// ExportScanResultsToYAML exports the scan results to a YAML file and returns the YAML data
+func ExportScanResultsToYAML(tools []DiscoveredTool, outputPath string) ([]byte, error) {
+	// Format the scan results as YAML
+	yamlData, _, err := FormatScanResultsAsYAML(tools)
+	if err != nil {
+		return nil, err
+	}
+
+	// If an output path is provided, write the YAML data to the output file
+	if outputPath != "" {
+		err = os.WriteFile(outputPath, yamlData, 0644)
+		if err != nil {
+			return nil, fmt.Errorf("failed to write scan results to file: %v", err)
+		}
+		Logger.Info("scan results exported to YAML", "path", outputPath)
+	}
+
+	return yamlData, nil
 }
 
 func discoverTools(clientset *kubernetes.Clientset, graph *Graph) []DiscoveredTool {

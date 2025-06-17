@@ -52,11 +52,17 @@ go build -o k8mpatible .
 ### Usage
 
 ```bash
+# Run with default kubeconfig location ($HOME/.kube/config)
+./k8mpatible
+
 # Run with a specific kubeconfig file
 ./k8mpatible --kubeconfig=/path/to/your/kubeconfig
 
-# Run in-cluster (when deployed as a pod in the cluster)
-./k8mpatible
+# Export scan results to a YAML file
+./k8mpatible --output=scan-results.yaml
+
+# Specify both kubeconfig and output file
+./k8mpatible --kubeconfig=/path/to/your/kubeconfig --output=scan-results.yaml
 ```
 
 When run, k8mpatible will:
@@ -65,6 +71,33 @@ When run, k8mpatible will:
 2. Check compatibility between the discovered tools
 3. Plan for potential Kubernetes upgrades and check compatibility with your tools
 4. Output compatibility information and upgrade recommendations
+5. Optionally export the scan results to a YAML file if the `--output` flag is specified
+
+### YAML Export Format
+
+When using the `--output` flag, k8mpatible will export the scan results to a YAML file with the following structure:
+
+```yaml
+tools:
+  - name: tool-name
+    version: x.y.z
+    current_incompatibility:
+      - message: "Reason for incompatibility"
+        tool_name: "Incompatible tool name"
+    upgrade_incompatibility:
+      - message: "Reason for upgrade incompatibility"
+        tool_name: "Incompatible tool name after upgrade"
+summary:
+  totalTools: 5
+  incompatibleTools: 1
+  upgradeIncompatibleTools: 2
+```
+
+The YAML file includes:
+- A list of all discovered tools with their versions
+- Any current incompatibilities between tools
+- Any incompatibilities that would occur after a Kubernetes upgrade
+- A summary section with statistics about the scan results
 
 ## Adding New Tools
 
