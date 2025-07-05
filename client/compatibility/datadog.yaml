@@ -1,0 +1,80 @@
+nodes:
+  - name: datadog-agent
+    docUrl: https://docs.datadoghq.com/containers/cluster_agent/#minimum-agent-and-cluster-agent-versions
+    kubernetesResource:
+      - name: datadog-agent
+        namespace: datadog
+        type: daemonset
+  - name: datadog-cluster-agent
+    docUrl: https://docs.datadoghq.com/containers/cluster_agent/#minimum-agent-and-cluster-agent-versions
+    kubernetesResource:
+      - name: datadog-cluster-agent
+        namespace: datadog
+        type: deployment
+
+edges:
+  # Datadog Agent compatibility with Kubernetes based on official documentation
+  - source: datadog-agent
+    sourceVersion: 7.40.0
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.32"
+    compatible: true
+  - source: datadog-agent
+    sourceVersion: 7.37.0
+    destination: Kubernetes
+    versionRange: ">=1.22, <=1.32"
+    compatible: true
+  - source: datadog-agent
+    sourceVersion: 7.36.0
+    destination: Kubernetes
+    versionRange: ">=1.21, <=1.32"
+    compatible: true
+  - source: datadog-agent
+    sourceVersion: 7.19.0
+    destination: Kubernetes
+    versionRange: ">=1.16, <=1.32"
+    compatible: true
+
+  # # Datadog Cluster Agent compatibility with Kubernetes based on official documentation
+  # - source: datadog-cluster-agent
+  #   sourceVersion: 7.40.0
+  #   destination: Kubernetes
+  #   versionRange: ">=1.25, <=1.32"
+  #   compatible: true
+  # - source: datadog-cluster-agent
+  #   sourceVersion: 7.37.0
+  #   destination: Kubernetes
+  #   versionRange: ">=1.22, <=1.32"
+  #   compatible: true
+  # - source: datadog-cluster-agent
+  #   sourceVersion: 1.20.0
+  #   destination: Kubernetes
+  #   versionRange: ">=1.21, <=1.32"
+  #   compatible: true
+  # - source: datadog-cluster-agent
+  #   sourceVersion: 1.9.0
+  #   destination: Kubernetes
+  #   versionRange: ">=1.16, <=1.32"
+  #   compatible: true
+
+  # # Agent and Cluster Agent compatibility with each other based on minimum requirements
+  # - source: datadog-agent
+  #   sourceVersion: 7.40.0
+  #   destination: datadog-cluster-agent
+  #   versionRange: ">=7.40.0"
+  #   compatible: true
+  # - source: datadog-agent
+  #   sourceVersion: 7.37.0
+  #   destination: datadog-cluster-agent
+  #   versionRange: ">=7.37.0"
+  #   compatible: true
+  # - source: datadog-agent
+  #   sourceVersion: 7.36.0
+  #   destination: datadog-cluster-agent
+  #   versionRange: ">=1.20.0"
+  #   compatible: true
+  # - source: datadog-agent
+  #   sourceVersion: 7.19.0
+  #   destination: datadog-cluster-agent
+  #   versionRange: ">=1.9.0"
+  #   compatible: true

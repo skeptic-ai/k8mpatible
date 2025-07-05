@@ -17,10 +17,9 @@ func main() {
 	flag.Parse()
 
 	var config *rest.Config
-	client.CreateMergeGraph()
-	graph, graphErr := client.LoadGraphFromYAML("merged_output.yaml")
+	graph, graphErr := client.CreateMergeGraph()
 	if graphErr != nil {
-		log.Fatalf("Failed to load compatibility graph: %v", graphErr)
+		log.Fatalf("Failed to create compatibility graph: %v", graphErr)
 	}
 
 	// Try to build config from specified kubeconfig path, default path, or in-cluster config
@@ -42,9 +41,6 @@ func main() {
 
 	if graphErr != nil {
 		log.Fatalf("Failed to create Kubernetes config: %v", graphErr)
-	}
-	if graphErr != nil {
-		log.Fatalf("Failed to load compatibility graph: %v", graphErr)
 	}
 	clientset, clienterr := kubernetes.NewForConfig(config)
 	if clienterr != nil {

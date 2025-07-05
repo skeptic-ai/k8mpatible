@@ -136,9 +136,7 @@ func SaveMergedYaml(data *Graph, outputPath string) error {
 	return nil
 }
 
-func CreateMergeGraph() {
-	outputPath := "merged_output.yaml"
-
+func CreateMergeGraph() (*Graph, error) {
 	// Try to use embedded files first
 	mergedData, err := merge2("embedded")
 	if err != nil {
@@ -147,17 +145,11 @@ func CreateMergeGraph() {
 		dir := "./compatibility"
 		mergedData, err = merge2(dir)
 		if err != nil {
-			log.Fatalf("Error merging YAML files: %v", err)
+			return nil, fmt.Errorf("error merging YAML files: %v", err)
 		}
 	} else {
 		fmt.Println("Using embedded compatibility files")
 	}
 
-	// Save merged YAML to output file
-	err = SaveMergedYaml(mergedData, outputPath)
-	if err != nil {
-		log.Fatalf("Error saving merged YAML: %v", err)
-	}
-
-	fmt.Printf("Merged YAML saved to: %s\n", outputPath)
+	return mergedData, nil
 }
