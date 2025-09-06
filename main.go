@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/skeptic-ai/k8mpatible/client"
 	"k8s.io/client-go/kubernetes"
@@ -63,4 +64,20 @@ func main() {
 	if *outputFile != "" {
 		log.Printf("Scan results exported to %s", *outputFile)
 	}
+
+	// Check for incompatibilities and exit with error code if found
+	hasIncompatibilities := false
+	for _, tool := range scanResults {
+		if len(tool.CurrentIncompatibility) > 0 || len(tool.UpgradeIncompatibility) > 0 {
+			hasIncompatibilities = true
+			break
+		}
+	}
+
+	if hasIncompatibilities {
+		log.Printf("Incompatibilities found in cluster")
+		os.Exit(1)
+	}
+
+	log.Printf("No incompatibilities found")
 }
