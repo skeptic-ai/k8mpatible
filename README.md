@@ -17,21 +17,29 @@ k8mpatible is a tool that helps you manage compatibility between different tools
 
 #### Option 1: Download pre-built binary (recommended)
 
+Download the latest release from the [GitHub Releases page](https://github.com/skeptic-ai/k8mpatible/releases/latest) for your platform.
+
+Or use these commands to download and install the latest release:
+
 ```bash
+# Set the version (or get the latest version automatically)
+VERSION=$(curl -s https://api.github.com/repos/skeptic-ai/k8mpatible/releases/latest | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/')
+
 # For Linux (x86_64)
-curl -L https://github.com/skeptic-ai/k8mpatible/releases/download/v0.1.2/k8mpatible_0.1.2_Linux_x86_64.tar.gz | tar xz
+curl -L https://github.com/skeptic-ai/k8mpatible/releases/latest/download/k8mpatible_${VERSION#v}_Linux_x86_64.tar.gz | tar xz
 sudo mv k8mpatible /usr/local/bin/
 
 # For macOS (x86_64)
-curl -L https://github.com/skeptic-ai/k8mpatible/releases/download/v0.1.2/k8mpatible_0.1.2_Darwin_x86_64.tar.gz | tar xz
+curl -L https://github.com/skeptic-ai/k8mpatible/releases/latest/download/k8mpatible_${VERSION#v}_Darwin_x86_64.tar.gz | tar xz
 sudo mv k8mpatible /usr/local/bin/
 
 # For macOS (arm64/Apple Silicon)
-curl -L https://github.com/skeptic-ai/k8mpatible/releases/download/v0.1.2/k8mpatible_0.1.2_Darwin_arm64.tar.gz | tar xz
+curl -L https://github.com/skeptic-ai/k8mpatible/releases/latest/download/k8mpatible_${VERSION#v}_Darwin_arm64.tar.gz | tar xz
 sudo mv k8mpatible /usr/local/bin/
 
-# For Windows (PowerShell)
-Invoke-WebRequest -Uri https://github.com/skeptic-ai/k8mpatible/releases/download/v0.1.2/k8mpatible_0.1.2_Windows_x86_64.zip -OutFile k8mpatible.zip
+# For Windows (PowerShell) - Run in two steps
+$VERSION = (Invoke-RestMethod -Uri "https://api.github.com/repos/skeptic-ai/k8mpatible/releases/latest").tag_name.TrimStart("v")
+Invoke-WebRequest -Uri "https://github.com/skeptic-ai/k8mpatible/releases/latest/download/k8mpatible_${VERSION}_Windows_x86_64.zip" -OutFile k8mpatible.zip
 Expand-Archive -Path k8mpatible.zip -DestinationPath .
 # Move k8mpatible.exe to a directory in your PATH
 ```
@@ -81,6 +89,7 @@ When using the `--output` flag, k8mpatible will export the scan results to a YAM
 tools:
   - name: tool-name
     version: x.y.z
+    docUrl: https://link-to-tool-compatibility-documentation
     current_incompatibility:
       - message: "Reason for incompatibility"
         tool_name: "Incompatible tool name"

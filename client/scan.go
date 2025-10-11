@@ -97,7 +97,13 @@ func discoverTools(clientset *kubernetes.Clientset, graph *Graph) []DiscoveredTo
 			if err != nil {
 				continue
 			}
-			discoveredTools = append(discoveredTools, DiscoveredTool{node.Name, version, []Incompatibility{}, []Incompatibility{}})
+			discoveredTools = append(discoveredTools, DiscoveredTool{
+				Name:                   node.Name,
+				Version:                version,
+				DocUrl:                 node.DocUrl,
+				UpgradeIncompatibility: []Incompatibility{},
+				CurrentIncompatibility: []Incompatibility{},
+			})
 		}
 	}
 

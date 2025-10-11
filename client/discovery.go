@@ -105,6 +105,7 @@ type Incompatibility struct {
 type DiscoveredTool struct {
 	Name                   string            `json:"name"`
 	Version                *semver.Version   `json:"version"`
+	DocUrl                 string            `json:"docUrl" yaml:"docUrl"`
 	UpgradeIncompatibility []Incompatibility `json:"upgrade_incompatibility"`
 	CurrentIncompatibility []Incompatibility `json:"current_incompatibility"`
 }

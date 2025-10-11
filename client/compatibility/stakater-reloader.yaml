@@ -1,0 +1,18 @@
+nodes:
+  - name: stakater-reloader
+    docUrl: https://github.com/stakater/Reloader?tab=readme-ov-file#compatibility
+    kubernetesResource:
+      - name: reloader-reloader
+        namespace: kube-system
+        type: deployment
+edges:
+  - source: stakater-reloader
+    sourceVersion: 1.3
+    destination: Kubernetes
+    versionRange: ">=1.19, <=1.34"
+    compatible: true
+  - source: stakater-reloader
+    sourceVersion: 1.4
+    destination: Kubernetes
+    versionRange: ">=1.19, <=1.34"
+    compatible: true
