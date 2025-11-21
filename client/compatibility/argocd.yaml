@@ -7,6 +7,11 @@ nodes:
         type: deployment
 edges:
   - source: argocd
+    sourceVersion: 3.1
+    destination: Kubernetes
+    versionRange: ">=1.30, <=1.33"
+    compatible: true
+  - source: argocd
     sourceVersion: 3.0
     destination: Kubernetes
     versionRange: ">=1.29, <=1.32"
