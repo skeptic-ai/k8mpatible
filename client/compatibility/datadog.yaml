@@ -6,31 +6,36 @@ nodes:
         namespace: datadog
         type: daemonset
   - name: datadog-cluster-agent
-    docUrl: https://docs.datadoghq.com/containers/cluster_agent/#minimum-agent-and-cluster-agent-versions
+    docUrl: https://docs.datadoghq.com/containers/kubernetes/installation/?tab=datadogoperator#minimum-kubernetes-and-datadog-agent-versions
     kubernetesResource:
       - name: datadog-cluster-agent
         namespace: datadog
         type: deployment
 
 edges:
+  - source: datadog-agent
+    sourceVersion: 7.67
+    destination: Kubernetes
+    versionRange: ">=1.33"
+    compatible: true
   # Datadog Agent compatibility with Kubernetes based on official documentation
   - source: datadog-agent
-    sourceVersion: 7.40.0
+    sourceVersion: 7.40
     destination: Kubernetes
     versionRange: ">=1.25, <=1.32"
     compatible: true
   - source: datadog-agent
-    sourceVersion: 7.37.0
+    sourceVersion: 7.37
     destination: Kubernetes
     versionRange: ">=1.22, <=1.32"
     compatible: true
   - source: datadog-agent
-    sourceVersion: 7.36.0
+    sourceVersion: 7.36
     destination: Kubernetes
     versionRange: ">=1.21, <=1.32"
     compatible: true
   - source: datadog-agent
-    sourceVersion: 7.19.0
+    sourceVersion: 7.19
     destination: Kubernetes
     versionRange: ">=1.16, <=1.32"
     compatible: true
