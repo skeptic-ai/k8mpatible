@@ -7,7 +7,32 @@ nodes:
         type: deployment
 
 edges:
-  # External-DNS >= 0.10 compatibility
+  - source: external-dns
+    sourceVersion: 0.20
+    destination: Kubernetes
+    versionRange: ">=1.33"
+    compatible: true
+  - source: external-dns
+    sourceVersion: 0.19
+    destination: Kubernetes
+    versionRange: ">=1.33"
+    compatible: true
+  - source: external-dns
+    sourceVersion: 0.18
+    destination: Kubernetes
+    versionRange: ">=1.33"
+    compatible: true
+  - source: external-dns
+    sourceVersion: 0.17
+    destination: Kubernetes
+    versionRange: ">=1.19, <=1.32"
+    compatible: true
+  - source: external-dns
+    sourceVersion: 0.17
+    destination: Kubernetes
+    versionRange: "<=1.18"
+    compatible: false
+
   - source: external-dns
     sourceVersion: 0.16
     destination: Kubernetes

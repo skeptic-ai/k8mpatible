@@ -7,6 +7,16 @@ nodes:
         type: deployment
 edges:
   - source: argoworkflows
+    sourceVersion: 4.0
+    destination: Kubernetes
+    versionRange: ">=1.31, <=1.33"
+    compatible: true
+  - source: argoworkflows
+    sourceVersion: 3.7
+    destination: Kubernetes
+    versionRange: ">=1.31, <=1.33"
+    compatible: true
+  - source: argoworkflows
     sourceVersion: 3.6
     destination: Kubernetes
     versionRange: ">=1.28, <=1.31"
