@@ -168,6 +168,9 @@ k8mpatible currently supports the following tools:
 7. Flux
 8. Istio
 9. Linkerd
+10. Aws LB controller
+11. Stakater Reloader
+12. datadog agent
 
 ## Feature Ideas
 
