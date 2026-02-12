@@ -44,7 +44,6 @@ Expand-Archive -Path k8mpatible.zip -DestinationPath .
 # Move k8mpatible.exe to a directory in your PATH
 ```
 
-You can also manually download the appropriate binary for your platform from the [GitHub Releases page](https://github.com/skeptic-ai/k8mpatible/releases/latest).
 
 #### Option 2: Build from source
 
