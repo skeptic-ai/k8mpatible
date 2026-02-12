@@ -10,7 +10,7 @@ k8mpatible is a tool that helps you manage compatibility between different tools
 
 ### Prerequisites
 
-- Go 1.23.4 or later
+- Go 1.23.4 or later (only if building from source)
 - Access to a Kubernetes cluster (either via kubeconfig or running in-cluster)
 
 ### Installation
