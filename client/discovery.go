@@ -15,38 +15,129 @@ type VersionDiscoverer interface {
 	DiscoverVersion(*kubernetes.Clientset) (*semver.Version, error)
 }
 
+// LabelVersionDiscoverer finds resources by label selector across all namespaces.
+type LabelVersionDiscoverer struct {
+	Labels       map[string]string
+	ResourceType string
+}
+
+func (d *LabelVersionDiscoverer) DiscoverVersion(clientset *kubernetes.Clientset) (*semver.Version, error) {
+	selector := buildLabelSelector(d.Labels)
+
+	switch d.ResourceType {
+	case "deployment":
+		deployments, err := clientset.AppsV1().Deployments("").List(context.Background(), metav1.ListOptions{
+			LabelSelector: selector,
+		})
+		if err != nil {
+			return nil, err
+		}
+		if len(deployments.Items) == 0 {
+			return nil, fmt.Errorf("no deployments found with labels %s", selector)
+		}
+		return getImageFromContainers(deployments.Items[0].Spec.Template.Spec.Containers)
+
+	case "daemonset":
+		daemonsets, err := clientset.AppsV1().DaemonSets("").List(context.Background(), metav1.ListOptions{
+			LabelSelector: selector,
+		})
+		if err != nil {
+			return nil, err
+		}
+		if len(daemonsets.Items) == 0 {
+			return nil, fmt.Errorf("no daemonsets found with labels %s", selector)
+		}
+		return getImageFromContainers(daemonsets.Items[0].Spec.Template.Spec.Containers)
+	}
+
+	return nil, fmt.Errorf("unsupported resource type: %s", d.ResourceType)
+}
+
+func buildLabelSelector(labels map[string]string) string {
+	var parts []string
+	for k, v := range labels {
+		parts = append(parts, fmt.Sprintf("%s=%s", k, v))
+	}
+	return strings.Join(parts, ",")
+}
+
+// ImageVersionDiscoverer finds resources by matching container image path (registry-agnostic).
+type ImageVersionDiscoverer struct {
+	Image        string
+	ResourceType string
+}
+
+func (d *ImageVersionDiscoverer) DiscoverVersion(clientset *kubernetes.Clientset) (*semver.Version, error) {
+	switch d.ResourceType {
+	case "deployment":
+		deployments, err := clientset.AppsV1().Deployments("").List(context.Background(), metav1.ListOptions{})
+		if err != nil {
+			return nil, err
+		}
+		for _, deployment := range deployments.Items {
+			if version, err := getVersionFromContainersByImage(deployment.Spec.Template.Spec.Containers, d.Image); err == nil {
+				return version, nil
+			}
+		}
+		return nil, fmt.Errorf("no deployment found with image containing %s", d.Image)
+
+	case "daemonset":
+		daemonsets, err := clientset.AppsV1().DaemonSets("").List(context.Background(), metav1.ListOptions{})
+		if err != nil {
+			return nil, err
+		}
+		for _, daemonset := range daemonsets.Items {
+			if version, err := getVersionFromContainersByImage(daemonset.Spec.Template.Spec.Containers, d.Image); err == nil {
+				return version, nil
+			}
+		}
+		return nil, fmt.Errorf("no daemonset found with image containing %s", d.Image)
+	}
+
+	return nil, fmt.Errorf("unsupported resource type: %s", d.ResourceType)
+}
+
+// getVersionFromContainersByImage checks if any container's image contains the given image path
+// and extracts the version from its tag.
+func getVersionFromContainersByImage(containers []corev1.Container, imagePath string) (*semver.Version, error) {
+	for _, container := range containers {
+		// Split off the tag to compare just the image path
+		imageRef := container.Image
+		tagSep := strings.LastIndex(imageRef, ":")
+		if tagSep == -1 {
+			continue
+		}
+		imageWithoutTag := imageRef[:tagSep]
+		if strings.Contains(imageWithoutTag, imagePath) {
+			tag := imageRef[tagSep+1:]
+			return semver.NewVersion(tag)
+		}
+	}
+	return nil, fmt.Errorf("no container with image matching %s", imagePath)
+}
+
 type DeploymentVersionDiscoverer struct {
 	Name      string
 	Namespace string
 }
 
 func (d *DeploymentVersionDiscoverer) DiscoverVersion(clientset *kubernetes.Clientset) (*semver.Version, error) {
-	// Get all namespaces
 	namespaces, err := clientset.CoreV1().Namespaces().List(context.Background(), metav1.ListOptions{})
 	if err != nil {
-		fmt.Printf("error getting namespaces %s", err)
 		return nil, err
 	}
 	for _, namespace := range namespaces.Items {
-		// list deployments in the namespace
 		deployments, err := clientset.AppsV1().Deployments(namespace.Name).List(context.Background(), metav1.ListOptions{})
 		if err != nil {
-			fmt.Println("error getting deployments")
 			return nil, err
 		}
 		for _, deployment := range deployments.Items {
-			// if deployment name contains the name of the deployment we are looking for
 			if strings.Contains(deployment.Name, d.Name) {
-				image, err := getImageFromContainers(deployment.Spec.Template.Spec.Containers)
-				if err != nil {
-					fmt.Println("error getting image from containers")
-					return nil, err
-				}
-				return image, nil
+				return getImageFromContainers(deployment.Spec.Template.Spec.Containers)
 			}
 		}
 	}
-	return nil, fmt.Errorf("deployment not found")
+	return nil, fmt.Errorf("deployment %s not found", d.Name)
 }
 
 type DaemonSetVersionDiscoverer struct {
@@ -55,18 +146,54 @@ type DaemonSetVersionDiscoverer struct {
 }
 
 func (d *DaemonSetVersionDiscoverer) DiscoverVersion(clientset *kubernetes.Clientset) (*semver.Version, error) {
-	daemonset, err := clientset.AppsV1().DaemonSets(d.Namespace).Get(context.Background(), d.Name, metav1.GetOptions{
-		TypeMeta:        metav1.TypeMeta{},
-		ResourceVersion: "",
-	})
+	daemonset, err := clientset.AppsV1().DaemonSets(d.Namespace).Get(context.Background(), d.Name, metav1.GetOptions{})
 	if err != nil {
 		return nil, err
 	}
-	image, err := getImageFromContainers(daemonset.Spec.Template.Spec.Containers)
-	if err != nil {
-		return nil, err
+	return getImageFromContainers(daemonset.Spec.Template.Spec.Containers)
+}
+
+// FallbackVersionDiscoverer tries labels, then image, then name-based discovery.
+type FallbackVersionDiscoverer struct {
+	Resource KubernetesResource
+}
+
+func (f *FallbackVersionDiscoverer) DiscoverVersion(clientset *kubernetes.Clientset) (*semver.Version, error) {
+	// Try label-based discovery first
+	if len(f.Resource.Labels) > 0 {
+		discoverer := &LabelVersionDiscoverer{
+			Labels:       f.Resource.Labels,
+			ResourceType: f.Resource.Type,
+		}
+		if version, err := discoverer.DiscoverVersion(clientset); err == nil {
+			return version, nil
+		}
 	}
-	return image, nil
+
+	// Try image-based discovery second
+	if f.Resource.Image != "" {
+		discoverer := &ImageVersionDiscoverer{
+			Image:        f.Resource.Image,
+			ResourceType: f.Resource.Type,
+		}
+		if version, err := discoverer.DiscoverVersion(clientset); err == nil {
+			return version, nil
+		}
+	}
+
+	// Fall back to name-based discovery
+	switch f.Resource.Type {
+	case "deployment":
+		return (&DeploymentVersionDiscoverer{Name: f.Resource.Name, Namespace: f.Resource.Namespace}).DiscoverVersion(clientset)
+	case "daemonset":
+		return (&DaemonSetVersionDiscoverer{Name: f.Resource.Name, Namespace: f.Resource.Namespace}).DiscoverVersion(clientset)
+	default:
+		return nil, fmt.Errorf("unsupported resource type: %s", f.Resource.Type)
+	}
+}
+
+func NewVersionDiscoverer(resource KubernetesResource) VersionDiscoverer {
+	return &FallbackVersionDiscoverer{Resource: resource}
 }
 
 func getImageFromContainers(containers []corev1.Container) (*semver.Version, error) {
@@ -80,21 +207,9 @@ func getImageFromContainers(containers []corev1.Container) (*semver.Version, err
 	}
 	version, err := semver.NewVersion(imageParts[len(imageParts)-1])
 	if err != nil {
-		fmt.Printf("error parsing version: %v\n", err)
 		return nil, err
 	}
 	return version, nil
-}
-
-func NewVersionDiscoverer(resourceType, name, namespace string) VersionDiscoverer {
-	switch resourceType {
-	case "deployment":
-		return &DeploymentVersionDiscoverer{Name: name, Namespace: namespace}
-	case "daemonset":
-		return &DaemonSetVersionDiscoverer{Name: name, Namespace: namespace}
-	default:
-		return nil // or return an error indicating unsupported resource type
-	}
 }
 
 type Incompatibility struct {

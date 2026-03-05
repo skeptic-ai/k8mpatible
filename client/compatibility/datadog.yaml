@@ -5,12 +5,18 @@ nodes:
       - name: datadog-agent
         namespace: datadog
         type: daemonset
+        labels:
+          app.kubernetes.io/name: datadog-agent
+        image: datadog/agent
   - name: datadog-cluster-agent
     docUrl: https://docs.datadoghq.com/containers/kubernetes/installation/?tab=datadogoperator#minimum-kubernetes-and-datadog-agent-versions
     kubernetesResource:
       - name: datadog-cluster-agent
         namespace: datadog
         type: deployment
+        labels:
+          app.kubernetes.io/name: datadog-cluster-agent
+        image: datadog/cluster-agent
 
 edges:
   - source: datadog-agent

@@ -5,6 +5,9 @@ nodes:
       - name: istiod
         namespace: istio-system
         type: deployment
+        labels:
+          app: istiod
+        image: istio/pilot
 
 edges:
   - source: istio

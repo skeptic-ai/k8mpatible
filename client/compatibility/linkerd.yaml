@@ -5,6 +5,9 @@ nodes:
       - name: linkerd-controller
         namespace: linkerd
         type: deployment
+        labels:
+          linkerd.io/control-plane-component: controller
+        image: linkerd-io/controller
 
 edges:
   - source: Linkerd

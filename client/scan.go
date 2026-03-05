@@ -92,7 +92,7 @@ func discoverTools(clientset *kubernetes.Clientset, graph *Graph) []DiscoveredTo
 
 	for _, node := range graph.Nodes {
 		for _, resource := range node.KubernetesResources {
-			discoverer := NewVersionDiscoverer(resource.Type, resource.Name, resource.Namespace)
+			discoverer := NewVersionDiscoverer(resource)
 			version, err := discoverer.DiscoverVersion(clientset)
 			if err != nil {
 				continue

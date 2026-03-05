@@ -5,6 +5,9 @@ nodes:
       - name: reloader-reloader
         namespace: kube-system
         type: deployment
+        labels:
+          app: reloader-reloader
+        image: stakater/reloader
 edges:
   - source: stakater-reloader
     sourceVersion: 1.3

@@ -5,6 +5,9 @@ nodes:
       - name: external-dns
         namespace: external-dns
         type: deployment
+        labels:
+          app.kubernetes.io/name: external-dns
+        image: kubernetes-sigs/external-dns
 
 edges:
   - source: external-dns

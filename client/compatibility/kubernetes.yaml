@@ -5,3 +5,5 @@ nodes:
       - name: kube-proxy
         namespace: kube-system
         type: daemonset
+        labels:
+          k8s-app: kube-proxy
