@@ -7,7 +7,7 @@ nodes:
         type: deployment
         labels:
           linkerd.io/control-plane-component: controller
-        image: controller
+        image: linkerd/controller
 
 edges:
   - source: Linkerd

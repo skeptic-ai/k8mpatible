@@ -8,7 +8,7 @@ nodes:
         labels:
           app.kubernetes.io/name: argo-workflows-workflow-controller
           app.kubernetes.io/part-of: argo-workflows
-        image: workflow-controller
+        image: argoproj/workflow-controller
 edges:
   - source: argoworkflows
     sourceVersion: 4.0
