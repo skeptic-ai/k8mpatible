@@ -7,7 +7,7 @@ nodes:
         type: deployment
         labels:
           app: reloader-reloader
-        image: stakater/reloader
+        image: reloader
 edges:
   - source: stakater-reloader
     sourceVersion: 1.3

@@ -7,7 +7,7 @@ nodes:
         type: deployment
         labels:
           app: istiod
-        image: istio/pilot
+        image: pilot
 
 edges:
   - source: istio

@@ -7,7 +7,7 @@ nodes:
         type: deployment
         labels:
           app.kubernetes.io/name: aws-load-balancer-controller
-        image: amazon/aws-alb-ingress-controller
+        image: aws-load-balancer-controller
 edges:
   - source: aws-load-balancer-controller
     sourceVersion: 2.0

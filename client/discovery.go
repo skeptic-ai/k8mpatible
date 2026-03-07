@@ -221,7 +221,8 @@ func getImageFromContainers(containers []corev1.Container, imageHint ...string) 
 			}
 		}
 		if image == "" {
-			return nil, fmt.Errorf("no container with image matching %s", imageHint[0])
+			// Hint didn't match (e.g. ECR mirror changed the image path); fall back to first container
+			image = containers[0].Image
 		}
 	} else {
 		image = containers[0].Image
