@@ -5,6 +5,9 @@ nodes:
       - name: external-dns
         namespace: external-dns
         type: deployment
+        labels:
+          app.kubernetes.io/name: external-dns
+        image: external-dns
 
 edges:
   - source: external-dns
@@ -36,7 +39,7 @@ edges:
   - source: external-dns
     sourceVersion: 0.16
     destination: Kubernetes
-    versionRange: ">=1.19"
+    versionRange: ">=1.19, <=1.32"
     compatible: true
   - source: external-dns
     sourceVersion: 0.16
@@ -48,7 +51,7 @@ edges:
   - source: external-dns
     sourceVersion: 0.15
     destination: Kubernetes
-    versionRange: ">=1.19"
+    versionRange: ">=1.19, <=1.32"
     compatible: true
   - source: external-dns
     sourceVersion: 0.15
@@ -60,7 +63,7 @@ edges:
   - source: external-dns
     sourceVersion: 0.14
     destination: Kubernetes
-    versionRange: ">=1.19"
+    versionRange: ">=1.19, <=1.32"
     compatible: true
   - source: external-dns
     sourceVersion: 0.14

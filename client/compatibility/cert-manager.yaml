@@ -5,6 +5,10 @@ nodes:
       - name: cert-manager
         namespace: cert-manager
         type: deployment
+        labels:
+          app.kubernetes.io/name: cert-manager
+          app.kubernetes.io/component: controller
+        image: cert-manager-controller
 edges:
   - source: cert-manager
     sourceVersion: 1.19

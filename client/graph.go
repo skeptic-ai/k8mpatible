@@ -10,9 +10,11 @@ type Daemonset struct {
 }
 
 type KubernetesResource struct {
-	Name      string `yaml:"name"`
-	Namespace string `yaml:"namespace"`
-	Type      string `yaml:"type"`
+	Name      string            `yaml:"name"`
+	Namespace string            `yaml:"namespace"`
+	Type      string            `yaml:"type"`
+	Labels    map[string]string `yaml:"labels,omitempty"`
+	Image     string            `yaml:"image,omitempty"`
 }
 
 type Tool struct {
