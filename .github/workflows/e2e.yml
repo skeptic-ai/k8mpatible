@@ -1,0 +1,40 @@
+name: E2E Tests
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.23.4'
+          cache: true
+
+      - name: Run unit tests
+        run: cd client && go test -v ./...
+
+      - name: Build k8mpatible binary
+        run: go build -o k8mpatible .
+
+      - name: Create KIND cluster
+        uses: helm/kind-action@v1
+        with:
+          node_image: kindest/node:v1.31.4
+          cluster_name: k8mpatible-e2e
+          wait: 120s
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: 'v3.16.3'
+
+      - name: Run E2E tests
+        run: ./e2e/run-e2e.sh ./k8mpatible
