@@ -160,7 +160,7 @@ install_kyverno_kubectl() {
     kubectl create namespace kyverno --dry-run=client -o yaml | kubectl apply -f -
     kubectl create deployment kyverno-admission-controller \
         --namespace kyverno \
-        --image "nginx:v1.12.6" \
+        --image "ghcr.io/kyverno/kyverno:${app_version}" \
         --dry-run=client -o yaml | kubectl apply -f -
     # Add required labels for k8mpatible discovery
     kubectl label deployment kyverno-admission-controller \
@@ -168,8 +168,8 @@ install_kyverno_kubectl() {
         app.kubernetes.io/name=kyverno \
         app.kubernetes.io/component=admission-controller \
         --overwrite
-    kubectl wait --for=condition=Available deployment/kyverno-admission-controller \
-        --namespace kyverno --timeout=120s
+    # No kubectl wait — deployment only needs to exist for discovery, not be Available
+    sleep 5
 }
 
 uninstall_kyverno_kubectl() {
