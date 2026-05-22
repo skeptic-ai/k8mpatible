@@ -29,45 +29,7 @@ echo "Using KIND cluster: ${CLUSTER_NAME}"
 kubectl cluster-info
 kubectl wait --for=condition=Ready nodes --all --timeout=120s
 
-install_cert_manager() {
-    local version="$1"
-    echo "--- Installing cert-manager ${version} ---"
-    helm repo add jetstack https://charts.jetstack.io --force-update
-    helm repo update jetstack
-    helm install cert-manager jetstack/cert-manager \
-        --namespace cert-manager --create-namespace \
-        --version "${version}" \
-        --set crds.enabled=true \
-        --wait --timeout 180s
-}
-
-install_istio() {
-    local version="$1"
-    echo "--- Installing Istio ${version} (istiod only) ---"
-    helm repo add istio https://istio-release.storage.googleapis.com/charts --force-update
-    helm repo update istio
-    helm install istio-base istio/base \
-        --namespace istio-system --create-namespace \
-        --version "${version}" \
-        --wait --timeout 120s
-    helm install istiod istio/istiod \
-        --namespace istio-system \
-        --version "${version}" \
-        --wait --timeout 180s
-}
-
-uninstall_cert_manager() {
-    echo "--- Uninstalling cert-manager ---"
-    helm uninstall cert-manager --namespace cert-manager --wait 2>/dev/null || true
-    kubectl delete namespace cert-manager --wait=true 2>/dev/null || true
-}
-
-uninstall_istio() {
-    echo "--- Uninstalling Istio ---"
-    helm uninstall istiod --namespace istio-system --wait 2>/dev/null || true
-    helm uninstall istio-base --namespace istio-system --wait 2>/dev/null || true
-    kubectl delete namespace istio-system --wait=true 2>/dev/null || true
-}
+# ── Helper: run k8mpatible and capture output ──
 
 run_k8mpatible() {
     local output_file
@@ -84,6 +46,8 @@ run_k8mpatible() {
     K8M_OUTPUT="$(cat "${output_file}")"
     rm -f "${output_file}"
 }
+
+# ── Assertion helpers ──
 
 assert_exit_code() {
     local expected="$1"
@@ -121,10 +85,121 @@ assert_output_not_contains() {
     fi
 }
 
-# ──────────────────────────────────────────────
+# ══════════════════════════════════════════════
+# Install / uninstall helpers
+# ══════════════════════════════════════════════
+
+# ── cert-manager ──
+
+install_cert_manager() {
+    local version="$1"
+    echo "--- Installing cert-manager ${version} ---"
+    helm repo add jetstack https://charts.jetstack.io --force-update
+    helm repo update jetstack
+    helm install cert-manager jetstack/cert-manager \
+        --namespace cert-manager --create-namespace \
+        --version "${version}" \
+        --set crds.enabled=true \
+        --wait --timeout 180s
+}
+
+uninstall_cert_manager() {
+    echo "--- Uninstalling cert-manager ---"
+    helm uninstall cert-manager --namespace cert-manager --wait 2>/dev/null || true
+    kubectl delete namespace cert-manager --wait=true 2>/dev/null || true
+}
+
+# ── Istio ──
+
+install_istio() {
+    local version="$1"
+    echo "--- Installing Istio ${version} (istiod only) ---"
+    helm repo add istio https://istio-release.storage.googleapis.com/charts --force-update
+    helm repo update istio
+    helm install istio-base istio/base \
+        --namespace istio-system --create-namespace \
+        --version "${version}" \
+        --wait --timeout 120s
+    helm install istiod istio/istiod \
+        --namespace istio-system \
+        --version "${version}" \
+        --wait --timeout 180s
+}
+
+uninstall_istio() {
+    echo "--- Uninstalling Istio ---"
+    helm uninstall istiod --namespace istio-system --wait 2>/dev/null || true
+    helm uninstall istio-base --namespace istio-system --wait 2>/dev/null || true
+    kubectl delete namespace istio-system --wait=true 2>/dev/null || true
+}
+
+# ── KEDA ──
+
+install_keda() {
+    local version="$1"
+    echo "--- Installing KEDA ${version} ---"
+    helm repo add kedacore https://kedacore.github.io/charts --force-update
+    helm repo update kedacore
+    helm install keda kedacore/keda \
+        --namespace keda --create-namespace \
+        --version "${version}" \
+        --wait --timeout 180s
+}
+
+uninstall_keda() {
+    echo "--- Uninstalling KEDA ---"
+    helm uninstall keda --namespace keda --wait 2>/dev/null || true
+    kubectl delete namespace keda --wait=true 2>/dev/null || true
+}
+
+# ── Kyverno ──
+
+install_kyverno() {
+    local version="$1"
+    echo "--- Installing Kyverno ${version} ---"
+    helm repo add kyverno https://kyverno.github.io/kyverno --force-update
+    helm repo update kyverno
+    helm install kyverno kyverno/kyverno \
+        --namespace kyverno --create-namespace \
+        --version "${version}" \
+        --set admissionController.replicas=1 \
+        --set backgroundController.enabled=false \
+        --set cleanupController.enabled=false \
+        --set reportsController.enabled=false \
+        --wait --timeout 180s
+}
+
+uninstall_kyverno() {
+    echo "--- Uninstalling Kyverno ---"
+    helm uninstall kyverno --namespace kyverno --wait 2>/dev/null || true
+    kubectl delete namespace kyverno --wait=true 2>/dev/null || true
+}
+
+# ── NGINX Ingress Controller ──
+
+install_nginx_ingress() {
+    local version="$1"
+    echo "--- Installing NGINX Ingress Controller ${version} ---"
+    helm repo add nginx-stable https://helm.nginx.com/stable --force-update
+    helm repo update nginx-stable
+    helm install nginx-ingress nginx-stable/nginx-ingress \
+        --namespace nginx-ingress --create-namespace \
+        --version "${version}" \
+        --set controller.service.type=NodePort \
+        --set controller.replicaCount=1 \
+        --wait --timeout 180s
+}
+
+uninstall_nginx_ingress() {
+    echo "--- Uninstalling NGINX Ingress Controller ---"
+    helm uninstall nginx-ingress --namespace nginx-ingress --wait 2>/dev/null || true
+    kubectl delete namespace nginx-ingress --wait=true 2>/dev/null || true
+}
+
+# ══════════════════════════════════════════════
 # Test 1: Compatible versions
 #   cert-manager 1.17.x on K8s 1.31 -> compatible (range >=1.29, <=1.32)
-# ──────────────────────────────────────────────
+# ══════════════════════════════════════════════
 test_compatible_versions() {
     echo ""
     echo "========================================="
@@ -144,10 +219,10 @@ test_compatible_versions() {
     uninstall_cert_manager
 }
 
-# ──────────────────────────────────────────────
+# ══════════════════════════════════════════════
 # Test 2: Incompatible version (too old for K8s)
 #   Istio 1.17.x on K8s 1.31 -> incompatible (range >=1.23, <=1.26)
-# ──────────────────────────────────────────────
+# ══════════════════════════════════════════════
 test_incompatible_versions() {
     echo ""
     echo "========================================="
@@ -165,10 +240,10 @@ test_incompatible_versions() {
     uninstall_istio
 }
 
-# ──────────────────────────────────────────────
+# ══════════════════════════════════════════════
 # Test 3: Mixed compatible + incompatible
 #   cert-manager 1.17.x (compatible) + Istio 1.17.x (incompatible)
-# ──────────────────────────────────────────────
+# ══════════════════════════════════════════════
 test_mixed_compatibility() {
     echo ""
     echo "========================================="
@@ -188,13 +263,102 @@ test_mixed_compatibility() {
     uninstall_cert_manager
 }
 
-# ──────────────────────────────────────────────
+# ══════════════════════════════════════════════
+# Test 4: Tier-1 tool compatible — KEDA
+#   KEDA 2.16.x on K8s 1.31 -> compatible (range >=1.29, <=1.31)
+# ══════════════════════════════════════════════
+test_keda_compatible() {
+    echo ""
+    echo "========================================="
+    echo "TEST 4: KEDA compatible (tier-1 tool)"
+    echo "========================================="
+
+    install_keda "2.16.1"
+
+    run_k8mpatible
+
+    assert_exit_code 0 "Compatible KEDA should produce exit code 0"
+    assert_output_contains "keda" "Output should list keda as a discovered tool"
+    assert_output_not_contains "current_incompatibility" "No current incompatibilities expected"
+
+    uninstall_keda
+}
+
+# ══════════════════════════════════════════════
+# Test 5: Tier-1 tool incompatible — Kyverno
+#   Kyverno 1.12.x on K8s 1.31 -> incompatible (range >=1.26, <=1.29)
+# ══════════════════════════════════════════════
+test_kyverno_incompatible() {
+    echo ""
+    echo "========================================="
+    echo "TEST 5: Kyverno incompatible (tier-1 tool)"
+    echo "========================================="
+
+    install_kyverno "1.12.6"
+
+    run_k8mpatible
+
+    assert_exit_code 1 "Incompatible Kyverno should produce exit code 1"
+    assert_output_contains "kyverno" "Output should list kyverno as a discovered tool"
+
+    uninstall_kyverno
+}
+
+# ══════════════════════════════════════════════
+# Test 6: Tier-1 tool compatible — NGINX Ingress
+#   NGINX Ingress 3.7.x on K8s 1.31 -> compatible (range >=1.25, <=1.31)
+# ══════════════════════════════════════════════
+test_nginx_ingress_compatible() {
+    echo ""
+    echo "========================================="
+    echo "TEST 6: NGINX Ingress compatible (tier-1 tool)"
+    echo "========================================="
+
+    install_nginx_ingress "3.7.2"
+
+    run_k8mpatible
+
+    assert_exit_code 0 "Compatible NGINX Ingress should produce exit code 0"
+    assert_output_contains "nginx-ingress" "Output should list nginx-ingress-controller as a discovered tool"
+    assert_output_not_contains "current_incompatibility" "No current incompatibilities expected"
+
+    uninstall_nginx_ingress
+}
+
+# ══════════════════════════════════════════════
+# Test 7: Mixed tier-1 tools (compatible + incompatible)
+#   KEDA 2.16.x (compatible) + Kyverno 1.12.x (incompatible)
+# ══════════════════════════════════════════════
+test_mixed_tier1() {
+    echo ""
+    echo "========================================="
+    echo "TEST 7: Mixed tier-1 tools (KEDA compatible + Kyverno incompatible)"
+    echo "========================================="
+
+    install_keda "2.16.1"
+    install_kyverno "1.12.6"
+
+    run_k8mpatible
+
+    assert_exit_code 1 "Mixed tier-1 should exit 1 due to incompatible Kyverno"
+    assert_output_contains "keda" "Output should list keda"
+    assert_output_contains "kyverno" "Output should list kyverno"
+
+    uninstall_kyverno
+    uninstall_keda
+}
+
+# ══════════════════════════════════════════════
 # Run all tests
-# ──────────────────────────────────────────────
+# ══════════════════════════════════════════════
 main() {
     test_compatible_versions
     test_incompatible_versions
     test_mixed_compatibility
+    test_keda_compatible
+    test_kyverno_incompatible
+    test_nginx_ingress_compatible
+    test_mixed_tier1
 
     echo ""
     echo "========================================="
