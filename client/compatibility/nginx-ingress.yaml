@@ -1,0 +1,58 @@
+nodes:
+  - name: nginx-ingress-controller
+    docUrl: https://docs.nginx.com/nginx-ingress-controller/technical-specifications/
+    kubernetesResource:
+      - name: nginx-ingress
+        namespace: nginx-ingress
+        type: deployment
+        labels:
+          app: nginx-ingress
+        image: nginx/nginx-ingress
+edges:
+  # NGINX Ingress Controller compatibility with Kubernetes
+  # https://docs.nginx.com/nginx-ingress-controller/technical-specifications/
+  - source: nginx-ingress-controller
+    sourceVersion: 5.4
+    destination: Kubernetes
+    versionRange: ">=1.28, <=1.35"
+    compatible: true
+  - source: nginx-ingress-controller
+    sourceVersion: 5.3
+    destination: Kubernetes
+    versionRange: ">=1.27, <=1.35"
+    compatible: true
+  - source: nginx-ingress-controller
+    sourceVersion: 5.2
+    destination: Kubernetes
+    versionRange: ">=1.27, <=1.34"
+    compatible: true
+  - source: nginx-ingress-controller
+    sourceVersion: 5.1
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.33"
+    compatible: true
+  - source: nginx-ingress-controller
+    sourceVersion: 5.0
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.32"
+    compatible: true
+  - source: nginx-ingress-controller
+    sourceVersion: 4.0
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.32"
+    compatible: true
+  - source: nginx-ingress-controller
+    sourceVersion: 3.7
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.31"
+    compatible: true
+  - source: nginx-ingress-controller
+    sourceVersion: 3.6
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.31"
+    compatible: true
+  - source: nginx-ingress-controller
+    sourceVersion: 3.5
+    destination: Kubernetes
+    versionRange: ">=1.23, <=1.30"
+    compatible: true

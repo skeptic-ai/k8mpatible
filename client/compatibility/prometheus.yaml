@@ -1,0 +1,93 @@
+nodes:
+  - name: prometheus-operator
+    docUrl: https://prometheus-operator.dev/docs/getting-started/compatibility/
+    kubernetesResource:
+      - name: prometheus-operator
+        namespace: monitoring
+        type: deployment
+        labels:
+          app.kubernetes.io/name: prometheus-operator
+        image: prometheus-operator
+edges:
+  # Prometheus Operator compatibility with Kubernetes
+  # Based on Go client-go version mapping and CEL requirement (>= v0.84.0 needs K8s >= 1.25)
+  - source: prometheus-operator
+    sourceVersion: 0.91
+    destination: Kubernetes
+    versionRange: ">=1.33, <=1.35"
+    compatible: true
+  - source: prometheus-operator
+    sourceVersion: 0.90
+    destination: Kubernetes
+    versionRange: ">=1.32, <=1.35"
+    compatible: true
+  - source: prometheus-operator
+    sourceVersion: 0.89
+    destination: Kubernetes
+    versionRange: ">=1.32, <=1.34"
+    compatible: true
+  - source: prometheus-operator
+    sourceVersion: 0.88
+    destination: Kubernetes
+    versionRange: ">=1.31, <=1.34"
+    compatible: true
+  - source: prometheus-operator
+    sourceVersion: 0.87
+    destination: Kubernetes
+    versionRange: ">=1.31, <=1.33"
+    compatible: true
+  - source: prometheus-operator
+    sourceVersion: 0.86
+    destination: Kubernetes
+    versionRange: ">=1.30, <=1.33"
+    compatible: true
+  - source: prometheus-operator
+    sourceVersion: 0.85
+    destination: Kubernetes
+    versionRange: ">=1.30, <=1.32"
+    compatible: true
+  - source: prometheus-operator
+    sourceVersion: 0.84
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.32"
+    compatible: true
+  - source: prometheus-operator
+    sourceVersion: 0.83
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.31"
+    compatible: true
+  - source: prometheus-operator
+    sourceVersion: 0.82
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.31"
+    compatible: true
+  - source: prometheus-operator
+    sourceVersion: 0.81
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.30"
+    compatible: true
+  - source: prometheus-operator
+    sourceVersion: 0.80
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.30"
+    compatible: true
+  - source: prometheus-operator
+    sourceVersion: 0.79
+    destination: Kubernetes
+    versionRange: ">=1.24, <=1.29"
+    compatible: true
+  - source: prometheus-operator
+    sourceVersion: 0.78
+    destination: Kubernetes
+    versionRange: ">=1.24, <=1.29"
+    compatible: true
+  - source: prometheus-operator
+    sourceVersion: 0.77
+    destination: Kubernetes
+    versionRange: ">=1.23, <=1.28"
+    compatible: true
+  - source: prometheus-operator
+    sourceVersion: 0.76
+    destination: Kubernetes
+    versionRange: ">=1.23, <=1.28"
+    compatible: true

@@ -1,0 +1,53 @@
+nodes:
+  - name: cilium
+    docUrl: https://docs.cilium.io/en/stable/network/kubernetes/compatibility/
+    kubernetesResource:
+      - name: cilium
+        namespace: kube-system
+        type: daemonset
+        labels:
+          k8s-app: cilium
+        image: cilium/cilium
+edges:
+  # Cilium compatibility with Kubernetes based on e2e tested versions
+  # https://docs.cilium.io/en/stable/network/kubernetes/compatibility/
+  - source: cilium
+    sourceVersion: 1.19
+    destination: Kubernetes
+    versionRange: ">=1.32, <=1.35"
+    compatible: true
+  - source: cilium
+    sourceVersion: 1.18
+    destination: Kubernetes
+    versionRange: ">=1.30, <=1.34"
+    compatible: true
+  - source: cilium
+    sourceVersion: 1.17
+    destination: Kubernetes
+    versionRange: ">=1.28, <=1.33"
+    compatible: true
+  - source: cilium
+    sourceVersion: 1.16
+    destination: Kubernetes
+    versionRange: ">=1.27, <=1.31"
+    compatible: true
+  - source: cilium
+    sourceVersion: 1.15
+    destination: Kubernetes
+    versionRange: ">=1.26, <=1.30"
+    compatible: true
+  - source: cilium
+    sourceVersion: 1.14
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.29"
+    compatible: true
+  - source: cilium
+    sourceVersion: 1.13
+    destination: Kubernetes
+    versionRange: ">=1.24, <=1.28"
+    compatible: true
+  - source: cilium
+    sourceVersion: 1.12
+    destination: Kubernetes
+    versionRange: ">=1.21, <=1.26"
+    compatible: true
