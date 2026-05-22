@@ -11,6 +11,11 @@ nodes:
         image: argoproj/workflow-controller
 edges:
   - source: argoworkflows
+    sourceVersion: 4.1
+    destination: Kubernetes
+    versionRange: ">=1.32, <=1.35"
+    compatible: true
+  - source: argoworkflows
     sourceVersion: 4.0
     destination: Kubernetes
     versionRange: ">=1.31, <=1.33"

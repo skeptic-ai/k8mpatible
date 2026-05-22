@@ -12,6 +12,11 @@ edges:
   # Cilium compatibility with Kubernetes based on e2e tested versions
   # https://docs.cilium.io/en/stable/network/kubernetes/compatibility/
   - source: cilium
+    sourceVersion: 1.20
+    destination: Kubernetes
+    versionRange: ">=1.33, <=1.36"
+    compatible: true
+  - source: cilium
     sourceVersion: 1.19
     destination: Kubernetes
     versionRange: ">=1.32, <=1.35"
