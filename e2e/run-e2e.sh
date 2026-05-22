@@ -160,7 +160,7 @@ install_kyverno_kubectl() {
     kubectl create namespace kyverno --dry-run=client -o yaml | kubectl apply -f -
     kubectl create deployment kyverno-admission-controller \
         --namespace kyverno \
-        --image "ghcr.io/kyverno/kyverno:${app_version}" \
+        --image "nginx:v1.12.6" \
         --dry-run=client -o yaml | kubectl apply -f -
     # Add required labels for k8mpatible discovery
     kubectl label deployment kyverno-admission-controller \
