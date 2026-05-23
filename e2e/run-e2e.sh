@@ -468,7 +468,8 @@ test_sealed_secrets_compatible() {
 
 # ══════════════════════════════════════════════
 # Test 10: Tier-3 tool compatible — Harbor
-#   Harbor 2.12.x on K8s 1.31 -> compatible (range >=1.29, <=1.31)
+#   Harbor 2.13.x on K8s 1.31 -> compatible (range >=1.29, <=1.32)
+#   Must also survive upgrade simulation (1.31→1.32), so range must include 1.32
 # ══════════════════════════════════════════════
 test_harbor_compatible() {
     echo ""
@@ -476,7 +477,7 @@ test_harbor_compatible() {
     echo "TEST 10: Harbor compatible (tier-3 tool)"
     echo "========================================="
 
-    install_harbor_kubectl "2.12.4"
+    install_harbor_kubectl "2.13.0"
 
     run_k8mpatible
 
