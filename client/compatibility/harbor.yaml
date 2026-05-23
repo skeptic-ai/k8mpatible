@@ -1,0 +1,54 @@
+nodes:
+  - name: harbor
+    docUrl: https://goharbor.io/docs/2.0.0/install-config/
+    kubernetesResource:
+      - name: harbor-core
+        namespace: harbor
+        type: deployment
+        labels:
+          app: harbor
+          component: core
+        image: goharbor/harbor-core
+edges:
+  # Harbor (container registry) compatibility with Kubernetes
+  # https://github.com/goharbor/harbor-helm — Tested K8s versions per release
+  - source: harbor
+    sourceVersion: "2.14"
+    destination: Kubernetes
+    versionRange: ">=1.32, <=1.34"
+    compatible: true
+  - source: harbor
+    sourceVersion: "2.13"
+    destination: Kubernetes
+    versionRange: ">=1.29, <=1.31"
+    compatible: true
+  - source: harbor
+    sourceVersion: "2.12"
+    destination: Kubernetes
+    versionRange: ">=1.29, <=1.31"
+    compatible: true
+  - source: harbor
+    sourceVersion: "2.11"
+    destination: Kubernetes
+    versionRange: ">=1.28, <=1.30"
+    compatible: true
+  - source: harbor
+    sourceVersion: "2.10"
+    destination: Kubernetes
+    versionRange: ">=1.27, <=1.29"
+    compatible: true
+  - source: harbor
+    sourceVersion: "2.9"
+    destination: Kubernetes
+    versionRange: ">=1.26, <=1.28"
+    compatible: true
+  - source: harbor
+    sourceVersion: "2.8"
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.27"
+    compatible: true
+  - source: harbor
+    sourceVersion: "2.7"
+    destination: Kubernetes
+    versionRange: ">=1.24, <=1.26"
+    compatible: true

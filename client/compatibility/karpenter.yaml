@@ -1,0 +1,53 @@
+nodes:
+  - name: karpenter
+    docUrl: https://karpenter.sh/docs/upgrading/compatibility/
+    kubernetesResource:
+      - name: karpenter
+        namespace: karpenter
+        type: deployment
+        labels:
+          app.kubernetes.io/name: karpenter
+        image: karpenter-controller
+edges:
+  # Karpenter compatibility with Kubernetes
+  # https://karpenter.sh/docs/upgrading/compatibility/
+  - source: karpenter
+    sourceVersion: 1.9
+    destination: Kubernetes
+    versionRange: ">=1.33, <=1.35"
+    compatible: true
+  - source: karpenter
+    sourceVersion: 1.6
+    destination: Kubernetes
+    versionRange: ">=1.32, <=1.34"
+    compatible: true
+  - source: karpenter
+    sourceVersion: 1.5
+    destination: Kubernetes
+    versionRange: ">=1.31, <=1.33"
+    compatible: true
+  - source: karpenter
+    sourceVersion: 1.2
+    destination: Kubernetes
+    versionRange: ">=1.30, <=1.32"
+    compatible: true
+  - source: karpenter
+    sourceVersion: 1.0.5
+    destination: Kubernetes
+    versionRange: ">=1.29, <=1.31"
+    compatible: true
+  - source: karpenter
+    sourceVersion: 0.37
+    destination: Kubernetes
+    versionRange: ">=1.28, <=1.30"
+    compatible: true
+  - source: karpenter
+    sourceVersion: 0.35
+    destination: Kubernetes
+    versionRange: ">=1.27, <=1.29"
+    compatible: true
+  - source: karpenter
+    sourceVersion: 0.34
+    destination: Kubernetes
+    versionRange: ">=1.26, <=1.28"
+    compatible: true
