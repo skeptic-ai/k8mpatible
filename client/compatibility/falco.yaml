@@ -1,0 +1,65 @@
+nodes:
+  - name: falco
+    docUrl: https://falco.org/docs/reference/changelog/
+    kubernetesResource:
+      - name: falco
+        namespace: falco
+        type: daemonset
+        labels:
+          app.kubernetes.io/name: falco
+        image: falcosecurity/falco
+edges:
+  # Falco compatibility with Kubernetes
+  # Falco is deployed as a DaemonSet; K8s compatibility depends on kernel/eBPF support
+  # Falco 0.40+ requires modern kernels but supports K8s v1.25+
+  # https://falco.org/docs/reference/changelog/
+  - source: falco
+    sourceVersion: 0.43
+    destination: Kubernetes
+    versionRange: ">=1.27, <=1.35"
+    compatible: true
+  - source: falco
+    sourceVersion: 0.42
+    destination: Kubernetes
+    versionRange: ">=1.27, <=1.35"
+    compatible: true
+  - source: falco
+    sourceVersion: 0.41
+    destination: Kubernetes
+    versionRange: ">=1.26, <=1.34"
+    compatible: true
+  - source: falco
+    sourceVersion: 0.40
+    destination: Kubernetes
+    versionRange: ">=1.26, <=1.34"
+    compatible: true
+  - source: falco
+    sourceVersion: 0.39
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.33"
+    compatible: true
+  - source: falco
+    sourceVersion: 0.38
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.33"
+    compatible: true
+  - source: falco
+    sourceVersion: 0.37
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.32"
+    compatible: true
+  - source: falco
+    sourceVersion: 0.36
+    destination: Kubernetes
+    versionRange: ">=1.24, <=1.32"
+    compatible: true
+  - source: falco
+    sourceVersion: 0.35
+    destination: Kubernetes
+    versionRange: ">=1.24, <=1.31"
+    compatible: true
+  - source: falco
+    sourceVersion: 0.34
+    destination: Kubernetes
+    versionRange: ">=1.23, <=1.30"
+    compatible: true

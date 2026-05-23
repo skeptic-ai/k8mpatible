@@ -1,0 +1,114 @@
+nodes:
+  - name: opentelemetry-collector
+    docUrl: https://github.com/open-telemetry/opentelemetry-operator/blob/main/docs/compatibility.md
+    kubernetesResource:
+      - name: opentelemetry-collector
+        namespace: opentelemetry
+        type: deployment
+        labels:
+          app.kubernetes.io/name: opentelemetry-collector
+        image: otel/opentelemetry-collector-contrib
+edges:
+  # OpenTelemetry Operator / Collector compatibility with Kubernetes
+  # Operator v0.151+ tracks Collector v0.151.x, supports K8s v1.25–v1.35
+  # https://github.com/open-telemetry/opentelemetry-operator/blob/main/docs/compatibility.md
+  - source: opentelemetry-collector
+    sourceVersion: 0.151
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.35"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.150
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.35"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.149
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.35"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.148
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.35"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.147
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.35"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.146
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.35"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.145
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.35"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.144
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.35"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.143
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.35"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.142
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.34"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.141
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.34"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.140
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.33"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.139
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.33"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.138
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.33"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.137
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.33"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.136
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.33"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.135
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.33"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.134
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.33"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.132
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.33"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.129
+    destination: Kubernetes
+    versionRange: ">=1.23, <=1.33"
+    compatible: true
