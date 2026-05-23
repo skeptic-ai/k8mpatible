@@ -178,61 +178,72 @@ uninstall_kyverno_kubectl() {
     kubectl delete namespace kyverno --wait=true 2>/dev/null || true
 }
 
-# ── Traefik ──
+# ── Traefik (kubectl-based, avoiding Helm chart version mismatch) ──
 
-install_traefik() {
-    local version="$1"
-    echo "--- Installing Traefik ${version} ---"
-    helm repo add traefik https://traefik.github.io/charts --force-update
-    helm repo update traefik
-    helm install traefik traefik/traefik \
-        --namespace traefik --create-namespace \
-        --version "${version}" \
-        --wait --timeout 180s
+install_traefik_kubectl() {
+    local app_version="$1"
+    echo "--- Installing Traefik ${app_version} via kubectl ---"
+    kubectl create namespace traefik --dry-run=client -o yaml | kubectl apply -f -
+    kubectl create deployment traefik \
+        --namespace traefik \
+        --image "traefik:${app_version}" \
+        --dry-run=client -o yaml | kubectl apply -f -
+    kubectl label deployment traefik \
+        --namespace traefik \
+        app.kubernetes.io/name=traefik \
+        --overwrite
+    sleep 5
 }
 
-uninstall_traefik() {
+uninstall_traefik_kubectl() {
     echo "--- Uninstalling Traefik ---"
-    helm uninstall traefik --namespace traefik --wait 2>/dev/null || true
+    kubectl delete deployment traefik --namespace traefik --wait 2>/dev/null || true
     kubectl delete namespace traefik --wait=true 2>/dev/null || true
 }
 
-# ── Sealed Secrets ──
+# ── Sealed Secrets (kubectl-based) ──
 
-install_sealed_secrets() {
-    local version="$1"
-    echo "--- Installing Sealed Secrets ${version} ---"
-    helm repo add sealed-secrets https://bitnami-labs.github.io/sealed-secrets --force-update
-    helm repo update sealed-secrets
-    helm install sealed-secrets sealed-secrets/sealed-secrets \
+install_sealed_secrets_kubectl() {
+    local app_version="$1"
+    echo "--- Installing Sealed Secrets ${app_version} via kubectl ---"
+    kubectl create deployment sealed-secrets-controller \
         --namespace kube-system \
-        --version "${version}" \
-        --wait --timeout 180s
+        --image "docker.io/bitnami/sealed-secrets-controller:${app_version}" \
+        --dry-run=client -o yaml | kubectl apply -f -
+    kubectl label deployment sealed-secrets-controller \
+        --namespace kube-system \
+        app.kubernetes.io/name=sealed-secrets \
+        app.kubernetes.io/component=controller \
+        --overwrite
+    sleep 5
 }
 
-uninstall_sealed_secrets() {
+uninstall_sealed_secrets_kubectl() {
     echo "--- Uninstalling Sealed Secrets ---"
-    helm uninstall sealed-secrets --namespace kube-system --wait 2>/dev/null || true
+    kubectl delete deployment sealed-secrets-controller --namespace kube-system --wait 2>/dev/null || true
 }
 
-# ── Harbor ──
+# ── Harbor (kubectl-based, minimal core component for discovery) ──
 
-install_harbor() {
-    local version="$1"
-    echo "--- Installing Harbor ${version} ---"
-    helm repo add harbor https://helm.goharbor.io --force-update
-    helm repo update harbor
-    helm install harbor harbor/harbor \
-        --namespace harbor --create-namespace \
-        --version "${version}" \
-        --set expose.type=clusterIP \
-        --set persistence.enabled=false \
-        --wait --timeout 300s
+install_harbor_kubectl() {
+    local app_version="$1"
+    echo "--- Installing Harbor ${app_version} via kubectl ---"
+    kubectl create namespace harbor --dry-run=client -o yaml | kubectl apply -f -
+    kubectl create deployment harbor-core \
+        --namespace harbor \
+        --image "goharbor/harbor-core:${app_version}" \
+        --dry-run=client -o yaml | kubectl apply -f -
+    kubectl label deployment harbor-core \
+        --namespace harbor \
+        app=harbor \
+        component=core \
+        --overwrite
+    sleep 5
 }
 
-uninstall_harbor() {
+uninstall_harbor_kubectl() {
     echo "--- Uninstalling Harbor ---"
-    helm uninstall harbor --namespace harbor --wait 2>/dev/null || true
+    kubectl delete deployment harbor-core --namespace harbor --wait 2>/dev/null || true
     kubectl delete namespace harbor --wait=true 2>/dev/null || true
 }
 
@@ -403,7 +414,7 @@ test_traefik_compatible() {
     echo "TEST 7: Traefik compatible (tier-3 tool)"
     echo "========================================="
 
-    install_traefik "3.3.6"
+    install_traefik_kubectl "3.3.6"
 
     run_k8mpatible
 
@@ -411,7 +422,7 @@ test_traefik_compatible() {
     assert_output_contains "traefik" "Output should list traefik as a discovered tool"
     assert_output_not_contains "current_incompatibility" "No current incompatibilities expected"
 
-    uninstall_traefik
+    uninstall_traefik_kubectl
 }
 
 # ══════════════════════════════════════════════
@@ -424,14 +435,14 @@ test_traefik_incompatible() {
     echo "TEST 8: Traefik incompatible (tier-3 tool)"
     echo "========================================="
 
-    install_traefik "2.11.26"
+    install_traefik_kubectl "2.11.26"
 
     run_k8mpatible
 
     assert_exit_code 1 "Incompatible Traefik should produce exit code 1"
     assert_output_contains "traefik" "Output should list traefik as a discovered tool"
 
-    uninstall_traefik
+    uninstall_traefik_kubectl
 }
 
 # ══════════════════════════════════════════════
@@ -444,7 +455,7 @@ test_sealed_secrets_compatible() {
     echo "TEST 9: Sealed Secrets compatible (tier-3 tool)"
     echo "========================================="
 
-    install_sealed_secrets "0.27.3"
+    install_sealed_secrets_kubectl "0.27.3"
 
     run_k8mpatible
 
@@ -452,13 +463,12 @@ test_sealed_secrets_compatible() {
     assert_output_contains "sealed-secrets" "Output should list sealed-secrets as a discovered tool"
     assert_output_not_contains "current_incompatibility" "No current incompatibilities expected"
 
-    uninstall_sealed_secrets
+    uninstall_sealed_secrets_kubectl
 }
 
 # ══════════════════════════════════════════════
 # Test 10: Tier-3 tool compatible — Harbor
-#   Harbor 2.11.x on K8s 1.31 -> compatible (range >=1.28, <=1.30)
-#   Note: Harbor uses a different KinD-compatible version
+#   Harbor 2.12.x on K8s 1.31 -> compatible (range >=1.29, <=1.31)
 # ══════════════════════════════════════════════
 test_harbor_compatible() {
     echo ""
@@ -466,7 +476,7 @@ test_harbor_compatible() {
     echo "TEST 10: Harbor compatible (tier-3 tool)"
     echo "========================================="
 
-    install_harbor "1.16.0"
+    install_harbor_kubectl "2.12.4"
 
     run_k8mpatible
 
@@ -474,7 +484,7 @@ test_harbor_compatible() {
     assert_output_contains "harbor" "Output should list harbor as a discovered tool"
     assert_output_not_contains "current_incompatibility" "No current incompatibilities expected"
 
-    uninstall_harbor
+    uninstall_harbor_kubectl
 }
 
 # ══════════════════════════════════════════════
@@ -487,7 +497,7 @@ test_mixed_tier3() {
     echo "TEST 11: Mixed tier-3 tools (Traefik compatible + Karpenter incompatible)"
     echo "========================================="
 
-    install_traefik "3.3.6"
+    install_traefik_kubectl "3.3.6"
     install_karpenter_kubectl "v0.34.0"
 
     run_k8mpatible
@@ -497,7 +507,7 @@ test_mixed_tier3() {
     assert_output_contains "karpenter" "Output should list karpenter"
 
     uninstall_karpenter_kubectl
-    uninstall_traefik
+    uninstall_traefik_kubectl
 }
 
 # ══════════════════════════════════════════════
