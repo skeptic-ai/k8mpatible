@@ -163,10 +163,10 @@ install_velero() {
         --namespace velero --create-namespace \
         --version "${version}" \
         --set configuration.provider=aws \
-        --set configuration.backupStorageLocation.name=default \
-        --set configuration.backupStorageLocation.config.region=us-east-1 \
-        --set configuration.volumeSnapshotLocation.name=default \
-        --set configuration.volumeSnapshotLocation.config.region=us-east-1 \
+        --set configuration.backupStorageLocation[0].name=default \
+        --set configuration.backupStorageLocation[0].config.region=us-east-1 \
+        --set configuration.volumeSnapshotLocation[0].name=default \
+        --set configuration.volumeSnapshotLocation[0].config.region=us-east-1 \
         --set initContainers[0].name=velero-plugin-for-aws \
         --set initContainers[0].image=velero/velero-plugin-for-aws:v1.12.0 \
         --set initContainers[0].volumeMounts[0].mountPath=/target \
