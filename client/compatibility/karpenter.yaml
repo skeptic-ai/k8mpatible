@@ -1,0 +1,85 @@
+nodes:
+  - name: karpenter
+    docUrl: https://karpenter.sh/docs/upgrading/compatibility/
+    kubernetesResource:
+      - name: karpenter
+        namespace: karpenter
+        type: deployment
+        labels:
+          app.kubernetes.io/name: karpenter
+        image: karpenter-controller
+edges:
+  # Karpenter compatibility with Kubernetes
+  # https://karpenter.sh/docs/upgrading/compatibility/
+  #
+  # Edges are source=Karpenter -> destination=Kubernetes
+  # meaning: karpenter version X supports K8s range Y-Z
+  # Compatibility matrix from docs:
+  #   karpenter >= 1.9  -> K8s 1.35
+  #   karpenter >= 1.6  -> K8s 1.34
+  #   karpenter >= 1.5  -> K8s 1.33
+  #   karpenter >= 1.2  -> K8s 1.32
+  #   karpenter >= 1.0.5 -> K8s 1.31
+  #   karpenter >= 0.37 -> K8s 1.29-1.30
+  #   karpenter >= 0.35 -> K8s 1.27-1.28
+  #   karpenter >= 0.34 -> K8s 1.26
+  #
+  # Note: sourceVersion represents the MINIMUM karpenter version for the
+  # corresponding K8s version. The CheckCompatibility function matches by
+  # incrementing both sourceVersions by 1 minor and checking equality.
+  # This means sourceVersion should be (karpenter_major + 1).0 for proper matching.
+  #
+  # For the edge to match when CheckCompatibility("karpenter", 0.34, "Kubernetes", 1.31.4):
+  #   edge.SourceVersion.IncMinor() == sourceVersion.IncMinor()
+  #   edge.SourceVersion = X, sourceVersion = 0.34
+  #   X.IncMinor() == 0.35  =>  X = 0.34
+  # But this means the edge sourceVersion equals the karpenter version being checked,
+  # not the karpenter min version from the matrix.
+  #
+  # Given the IncMinor matching, the sourceVersion in each edge should be the
+  # karpenter version whose IncMinor matches the IncMinor of the running karpenter.
+  # For karpenter 0.34: sourceVersion = 0.34, IncMinor = 0.35
+  # For karpenter 0.37: sourceVersion = 0.37, IncMinor = 0.38
+  # For karpenter 1.0.5: sourceVersion = 1.0.5, IncMinor = 1.1.5
+  # For karpenter 1.9: sourceVersion = 1.9, IncMinor = 1.10
+
+  - source: karpenter
+    sourceVersion: "1.9"
+    destination: Kubernetes
+    versionRange: ">=1.35, <1.36"
+    compatible: true
+  - source: karpenter
+    sourceVersion: "1.6"
+    destination: Kubernetes
+    versionRange: ">=1.34, <1.35"
+    compatible: true
+  - source: karpenter
+    sourceVersion: "1.5"
+    destination: Kubernetes
+    versionRange: ">=1.33, <1.34"
+    compatible: true
+  - source: karpenter
+    sourceVersion: "1.2"
+    destination: Kubernetes
+    versionRange: ">=1.32, <1.33"
+    compatible: true
+  - source: karpenter
+    sourceVersion: "1.0.5"
+    destination: Kubernetes
+    versionRange: ">=1.31, <1.32"
+    compatible: true
+  - source: karpenter
+    sourceVersion: "0.37"
+    destination: Kubernetes
+    versionRange: ">=1.29, <1.31"
+    compatible: true
+  - source: karpenter
+    sourceVersion: "0.35"
+    destination: Kubernetes
+    versionRange: ">=1.27, <1.29"
+    compatible: true
+  - source: karpenter
+    sourceVersion: "0.34"
+    destination: Kubernetes
+    versionRange: ">=1.26, <1.27"
+    compatible: true

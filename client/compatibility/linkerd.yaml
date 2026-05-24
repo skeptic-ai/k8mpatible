@@ -11,6 +11,11 @@ nodes:
 
 edges:
   - source: Linkerd
+    sourceVersion: 2.20
+    destination: Kubernetes
+    versionRange: ">=1.22, <=1.35"
+    compatible: true
+  - source: Linkerd
     sourceVersion: 2.19
     destination: Kubernetes
     versionRange: ">=1.22, <=1.34"

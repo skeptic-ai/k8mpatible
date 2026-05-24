@@ -178,6 +178,98 @@ uninstall_kyverno_kubectl() {
     kubectl delete namespace kyverno --wait=true 2>/dev/null || true
 }
 
+# ── Traefik (kubectl-based, avoiding Helm chart version mismatch) ──
+
+install_traefik_kubectl() {
+    local app_version="$1"
+    echo "--- Installing Traefik ${app_version} via kubectl ---"
+    kubectl create namespace traefik --dry-run=client -o yaml | kubectl apply -f -
+    kubectl create deployment traefik \
+        --namespace traefik \
+        --image "traefik:${app_version}" \
+        --dry-run=client -o yaml | kubectl apply -f -
+    kubectl label deployment traefik \
+        --namespace traefik \
+        app.kubernetes.io/name=traefik \
+        --overwrite
+    sleep 5
+}
+
+uninstall_traefik_kubectl() {
+    echo "--- Uninstalling Traefik ---"
+    kubectl delete deployment traefik --namespace traefik --wait 2>/dev/null || true
+    kubectl delete namespace traefik --wait=true 2>/dev/null || true
+}
+
+# ── Sealed Secrets (kubectl-based) ──
+
+install_sealed_secrets_kubectl() {
+    local app_version="$1"
+    echo "--- Installing Sealed Secrets ${app_version} via kubectl ---"
+    kubectl create deployment sealed-secrets-controller \
+        --namespace kube-system \
+        --image "docker.io/bitnami/sealed-secrets-controller:${app_version}" \
+        --dry-run=client -o yaml | kubectl apply -f -
+    kubectl label deployment sealed-secrets-controller \
+        --namespace kube-system \
+        app.kubernetes.io/name=sealed-secrets \
+        app.kubernetes.io/component=controller \
+        --overwrite
+    sleep 5
+}
+
+uninstall_sealed_secrets_kubectl() {
+    echo "--- Uninstalling Sealed Secrets ---"
+    kubectl delete deployment sealed-secrets-controller --namespace kube-system --wait 2>/dev/null || true
+}
+
+# ── Harbor (kubectl-based, minimal core component for discovery) ──
+
+install_harbor_kubectl() {
+    local app_version="$1"
+    echo "--- Installing Harbor ${app_version} via kubectl ---"
+    kubectl create namespace harbor --dry-run=client -o yaml | kubectl apply -f -
+    kubectl create deployment harbor-core \
+        --namespace harbor \
+        --image "goharbor/harbor-core:${app_version}" \
+        --dry-run=client -o yaml | kubectl apply -f -
+    kubectl label deployment harbor-core \
+        --namespace harbor \
+        app=harbor \
+        component=core \
+        --overwrite
+    sleep 5
+}
+
+uninstall_harbor_kubectl() {
+    echo "--- Uninstalling Harbor ---"
+    kubectl delete deployment harbor-core --namespace harbor --wait 2>/dev/null || true
+    kubectl delete namespace harbor --wait=true 2>/dev/null || true
+}
+
+# ── Karpenter (kubectl-based minimal install for discovery) ──
+
+install_karpenter_kubectl() {
+    local app_version="$1"
+    echo "--- Installing Karpenter ${app_version} via kubectl ---"
+    kubectl create namespace karpenter --dry-run=client -o yaml | kubectl apply -f -
+    kubectl create deployment karpenter \
+        --namespace karpenter \
+        --image "public.ecr.aws/karpenter/karpenter:${app_version}" \
+        --dry-run=client -o yaml | kubectl apply -f -
+    kubectl label deployment karpenter \
+        --namespace karpenter \
+        app.kubernetes.io/name=karpenter \
+        --overwrite
+    sleep 5
+}
+
+uninstall_karpenter_kubectl() {
+    echo "--- Uninstalling Karpenter ---"
+    kubectl delete deployment karpenter --namespace karpenter --wait 2>/dev/null || true
+    kubectl delete namespace karpenter --wait=true 2>/dev/null || true
+}
+
 # ══════════════════════════════════════════════
 # Test 1: Compatible versions
 #   cert-manager 1.17.x on K8s 1.31 -> compatible (range >=1.29, <=1.32)
@@ -313,6 +405,113 @@ test_mixed_tier1() {
 }
 
 # ══════════════════════════════════════════════
+# Test 7: Tier-3 tool compatible — Traefik
+#   Traefik 3.3.x on K8s 1.31 -> compatible (range >=1.30, <=1.32)
+# ══════════════════════════════════════════════
+test_traefik_compatible() {
+    echo ""
+    echo "========================================="
+    echo "TEST 7: Traefik compatible (tier-3 tool)"
+    echo "========================================="
+
+    install_traefik_kubectl "3.3.6"
+
+    run_k8mpatible
+
+    assert_exit_code 0 "Compatible Traefik should produce exit code 0"
+    assert_output_contains "traefik" "Output should list traefik as a discovered tool"
+    assert_output_not_contains "current_incompatibility" "No current incompatibilities expected"
+
+    uninstall_traefik_kubectl
+}
+
+# ══════════════════════════════════════════════
+# Test 8: Tier-3 tool incompatible — Traefik (too old)
+#   Traefik 2.11.x on K8s 1.31 -> incompatible (range >=1.26, <=1.28)
+# ══════════════════════════════════════════════
+test_traefik_incompatible() {
+    echo ""
+    echo "========================================="
+    echo "TEST 8: Traefik incompatible (tier-3 tool)"
+    echo "========================================="
+
+    install_traefik_kubectl "2.11.26"
+
+    run_k8mpatible
+
+    assert_exit_code 1 "Incompatible Traefik should produce exit code 1"
+    assert_output_contains "traefik" "Output should list traefik as a discovered tool"
+
+    uninstall_traefik_kubectl
+}
+
+# ══════════════════════════════════════════════
+# Test 9: Tier-3 tool compatible — Sealed Secrets
+#   Sealed Secrets 0.27.x on K8s 1.31 -> compatible
+# ══════════════════════════════════════════════
+test_sealed_secrets_compatible() {
+    echo ""
+    echo "========================================="
+    echo "TEST 9: Sealed Secrets compatible (tier-3 tool)"
+    echo "========================================="
+
+    install_sealed_secrets_kubectl "0.27.3"
+
+    run_k8mpatible
+
+    assert_exit_code 0 "Compatible Sealed Secrets should produce exit code 0"
+    assert_output_contains "sealed-secrets" "Output should list sealed-secrets as a discovered tool"
+    assert_output_not_contains "current_incompatibility" "No current incompatibilities expected"
+
+    uninstall_sealed_secrets_kubectl
+}
+
+# ══════════════════════════════════════════════
+# Test 10: Tier-3 tool compatible — Harbor
+#   Harbor 2.13.x on K8s 1.31 -> compatible (range >=1.29, <=1.32)
+#   Must also survive upgrade simulation (1.31→1.32), so range must include 1.32
+# ══════════════════════════════════════════════
+test_harbor_compatible() {
+    echo ""
+    echo "========================================="
+    echo "TEST 10: Harbor compatible (tier-3 tool)"
+    echo "========================================="
+
+    install_harbor_kubectl "2.13.0"
+
+    run_k8mpatible
+
+    assert_exit_code 0 "Compatible Harbor should produce exit code 0"
+    assert_output_contains "harbor" "Output should list harbor as a discovered tool"
+    assert_output_not_contains "current_incompatibility" "No current incompatibilities expected"
+
+    uninstall_harbor_kubectl
+}
+
+# ══════════════════════════════════════════════
+# Test 11: Mixed tier-3 tools (Traefik compatible + Karpenter incompatible)
+#   Traefik 3.3.x (compatible) + Karpenter 0.34.x (incompatible, too old)
+# ══════════════════════════════════════════════
+test_mixed_tier3() {
+    echo ""
+    echo "========================================="
+    echo "TEST 11: Mixed tier-3 tools (Traefik compatible + Karpenter incompatible)"
+    echo "========================================="
+
+    install_traefik_kubectl "3.3.6"
+    install_karpenter_kubectl "v0.34.0"
+
+    run_k8mpatible
+
+    assert_exit_code 1 "Mixed tier-3 should exit 1 due to incompatible Karpenter"
+    assert_output_contains "traefik" "Output should list traefik"
+    assert_output_contains "karpenter" "Output should list karpenter"
+
+    uninstall_karpenter_kubectl
+    uninstall_traefik_kubectl
+}
+
+# ══════════════════════════════════════════════
 # Run all tests
 # ══════════════════════════════════════════════
 main() {
@@ -322,6 +521,11 @@ main() {
     test_keda_compatible
     test_kyverno_incompatible
     test_mixed_tier1
+    test_traefik_compatible
+    test_traefik_incompatible
+    test_sealed_secrets_compatible
+    test_harbor_compatible
+    test_mixed_tier3
 
     echo ""
     echo "========================================="

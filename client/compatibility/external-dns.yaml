@@ -11,6 +11,11 @@ nodes:
 
 edges:
   - source: external-dns
+    sourceVersion: 0.21
+    destination: Kubernetes
+    versionRange: ">=1.33"
+    compatible: true
+  - source: external-dns
     sourceVersion: 0.20
     destination: Kubernetes
     versionRange: ">=1.33"
