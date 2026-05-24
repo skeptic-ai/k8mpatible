@@ -187,7 +187,7 @@ uninstall_velero() {
 
 install_gatekeeper() {
     local version="$1"
-    echo "--- Installing Gatekeeper ${version} ---\"
+    echo "--- Installing Gatekeeper ${version} ---"
     helm repo add gatekeeper https://open-policy-agent.github.io/gatekeeper/charts --force-update
     helm repo update gatekeeper
     helm install gatekeeper gatekeeper/gatekeeper \
@@ -197,7 +197,7 @@ install_gatekeeper() {
 }
 
 uninstall_gatekeeper() {
-    echo "--- Uninstalling Gatekeeper ---\"
+    echo "--- Uninstalling Gatekeeper ---"
     helm uninstall gatekeeper --namespace gatekeeper-system --wait 2>/dev/null || true
     kubectl delete namespace gatekeeper-system --wait=true 2>/dev/null || true
 }
@@ -206,7 +206,7 @@ uninstall_gatekeeper() {
 
 install_jaeger_kubectl() {
     local app_version="$1"
-    echo "--- Installing Jaeger ${app_version} via kubectl ---\"
+    echo "--- Installing Jaeger ${app_version} via kubectl ---"
     kubectl create namespace observability --dry-run=client -o yaml | kubectl apply -f -
     kubectl create deployment jaeger \
         --namespace observability \
@@ -223,7 +223,7 @@ install_jaeger_kubectl() {
 }
 
 uninstall_jaeger_kubectl() {
-    echo "--- Uninstalling Jaeger ---\"
+    echo "--- Uninstalling Jaeger ---"
     kubectl delete deployment jaeger --namespace observability --wait 2>/dev/null || true
     kubectl delete namespace observability --wait=true 2>/dev/null || true
 }
@@ -232,7 +232,7 @@ uninstall_jaeger_kubectl() {
 
 install_opentelemetry_kubectl() {
     local app_version="$1"
-    echo "--- Installing OpenTelemetry Collector ${app_version} via kubectl ---\"
+    echo "--- Installing OpenTelemetry Collector ${app_version} via kubectl ---"
     kubectl create namespace opentelemetry --dry-run=client -o yaml | kubectl apply -f -
     kubectl create deployment opentelemetry-collector \
         --namespace opentelemetry \
@@ -247,7 +247,7 @@ install_opentelemetry_kubectl() {
 }
 
 uninstall_opentelemetry_kubectl() {
-    echo "--- Uninstalling OpenTelemetry Collector ---\"
+    echo "--- Uninstalling OpenTelemetry Collector ---"
     kubectl delete deployment opentelemetry-collector --namespace opentelemetry --wait 2>/dev/null || true
     kubectl delete namespace opentelemetry --wait=true 2>/dev/null || true
 }
