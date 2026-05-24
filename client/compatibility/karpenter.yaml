@@ -11,43 +11,66 @@ nodes:
 edges:
   # Karpenter compatibility with Kubernetes
   # https://karpenter.sh/docs/upgrading/compatibility/
-  - source: karpenter
-    sourceVersion: 1.9
-    destination: Kubernetes
-    versionRange: ">=1.33, <=1.35"
+  # Edges are source=Kubernetes -> destination=Karpenter
+  # meaning: for a given Kubernetes version, the minimum Karpenter version required
+  # Compatibility matrix from docs:
+  #   K8s 1.35  -> karpenter >= 1.9
+  #   K8s 1.34  -> karpenter >= 1.6
+  #   K8s 1.33  -> karpenter >= 1.5
+  #   K8s 1.32  -> karpenter >= 1.2
+  #   K8s 1.31  -> karpenter >= 1.0.5
+  #   K8s 1.30  -> karpenter >= 0.37
+  #   K8s 1.29  -> karpenter >= 0.37
+  #   K8s 1.28  -> karpenter >= 0.35
+  #   K8s 1.27  -> karpenter >= 0.35
+  #   K8s 1.26  -> karpenter >= 0.34
+  - source: Kubernetes
+    sourceVersion: "1.35"
+    destination: karpenter
+    versionRange: ">=1.9"
     compatible: true
-  - source: karpenter
-    sourceVersion: 1.6
-    destination: Kubernetes
-    versionRange: ">=1.32, <=1.34"
+  - source: Kubernetes
+    sourceVersion: "1.34"
+    destination: karpenter
+    versionRange: ">=1.6"
     compatible: true
-  - source: karpenter
-    sourceVersion: 1.5
-    destination: Kubernetes
-    versionRange: ">=1.31, <=1.33"
+  - source: Kubernetes
+    sourceVersion: "1.33"
+    destination: karpenter
+    versionRange: ">=1.5"
     compatible: true
-  - source: karpenter
-    sourceVersion: 1.2
-    destination: Kubernetes
-    versionRange: ">=1.30, <=1.32"
+  - source: Kubernetes
+    sourceVersion: "1.32"
+    destination: karpenter
+    versionRange: ">=1.2"
     compatible: true
-  - source: karpenter
-    sourceVersion: 1.0.5
-    destination: Kubernetes
-    versionRange: ">=1.29, <=1.31"
+  - source: Kubernetes
+    sourceVersion: "1.31"
+    destination: karpenter
+    versionRange: ">=1.0.5"
     compatible: true
-  - source: karpenter
-    sourceVersion: 0.37
-    destination: Kubernetes
-    versionRange: ">=1.28, <=1.30"
+  - source: Kubernetes
+    sourceVersion: "1.30"
+    destination: karpenter
+    versionRange: ">=0.37"
     compatible: true
-  - source: karpenter
-    sourceVersion: 0.35
-    destination: Kubernetes
-    versionRange: ">=1.27, <=1.29"
+  - source: Kubernetes
+    sourceVersion: "1.29"
+    destination: karpenter
+    versionRange: ">=0.37"
     compatible: true
-  - source: karpenter
-    sourceVersion: 0.34
-    destination: Kubernetes
-    versionRange: ">=1.26, <=1.28"
+  - source: Kubernetes
+    sourceVersion: "1.28"
+    destination: karpenter
+    versionRange: ">=0.35"
+    compatible: true
+  - source: Kubernetes
+    sourceVersion: "1.27"
+    destination: karpenter
+    versionRange: ">=0.35"
+    compatible: true
+  - source: Kubernetes
+    sourceVersion: "1.26"
+    destination: karpenter
+    versionRange: ">=0.34"
     compatible: true
