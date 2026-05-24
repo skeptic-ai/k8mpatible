@@ -162,7 +162,6 @@ install_velero() {
     helm install velero vmware-tanzu/velero \
         --namespace velero --create-namespace \
         --version "${version}" \
-        --set configuration.provider=aws \
         --set configuration.backupStorageLocation[0].name=default \
         --set configuration.backupStorageLocation[0].provider=aws \
         --set configuration.backupStorageLocation[0].bucket=velero-test \
