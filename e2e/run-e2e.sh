@@ -347,8 +347,8 @@ test_mixed_compatibility() {
 
 # ══════════════════════════════════════════════
 # Test 4: Tier-1 tool compatible — KEDA
-#   KEDA 2.17.x on K8s 1.31 -> compatible (range >=1.30, <=1.32)
-#   Must also survive upgrade simulation (1.31→1.32), so range must include 1.32
+#   KEDA 2.18.x on K8s 1.32 -> compatible (range >=1.31, <=1.33)
+#   Must also survive upgrade simulation (1.32→1.33), so range must include 1.33
 # ══════════════════════════════════════════════
 test_keda_compatible() {
     echo ""
@@ -356,7 +356,7 @@ test_keda_compatible() {
     echo "TEST 4: KEDA compatible (tier-1 tool)"
     echo "========================================="
 
-    install_keda "2.17.0"
+    install_keda "2.18.0"
 
     run_k8mpatible
 
@@ -390,7 +390,7 @@ test_kyverno_incompatible() {
 
 # ══════════════════════════════════════════════
 # Test 6: Mixed tier-1 tools (compatible + incompatible)
-#   KEDA 2.17.x (compatible, range >=1.30, <=1.32)
+#   KEDA 2.18.x (compatible, range >=1.31, <=1.33)
 #   + Kyverno 1.12.x (incompatible, range >=1.26, <=1.29)
 # ══════════════════════════════════════════════
 test_mixed_tier1() {
@@ -399,7 +399,7 @@ test_mixed_tier1() {
     echo "TEST 6: Mixed tier-1 tools (KEDA compatible + Kyverno incompatible)"
     echo "========================================="
 
-    install_keda "2.17.0"
+    install_keda "2.18.0"
     install_kyverno_kubectl "v1.12.6"
 
     run_k8mpatible
