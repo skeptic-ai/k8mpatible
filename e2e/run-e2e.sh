@@ -156,7 +156,7 @@ uninstall_keda() {
 
 install_velero() {
     local version="$1"
-    echo "--- Installing Velero ${version} ---\"
+    echo "--- Installing Velero ${version} ---"
     helm repo add vmware-tanzu https://vmware-tanzu.github.io/helm-charts --force-update
     helm repo update vmware-tanzu
     helm install velero vmware-tanzu/velero \
@@ -176,7 +176,7 @@ install_velero() {
 }
 
 uninstall_velero() {
-    echo "--- Uninstalling Velero ---\"
+    echo "--- Uninstalling Velero ---"
     helm uninstall velero --namespace velero --wait 2>/dev/null || true
     kubectl delete namespace velero --wait=true 2>/dev/null || true
 }
@@ -520,6 +520,32 @@ test_mixed_tier2() {
 }
 
 # ══════════════════════════════════════════════
+# Test 12: Inter-tool compatibility — OpenTelemetry Collector + cert-manager
+#   OpenTelemetry Collector 0.129 requires cert-manager >= 1.0
+#   cert-manager 1.17 is compatible with K8s 1.32
+#   Both should be discovered and inter-tool compatibility should pass
+# ══════════════════════════════════════════════
+test_inter_tool_compatibility() {
+    echo ""
+    echo "========================================="
+    echo "TEST 12: Inter-tool compatibility (OTel Collector + cert-manager)"
+    echo "========================================="
+
+    install_cert_manager "v1.17.2"
+    install_opentelemetry_kubectl "0.129.0"
+
+    run_k8mpatible
+
+    assert_exit_code 0 "OTel + cert-manager should produce exit code 0 (inter-tool compatible)"
+    assert_output_contains "opentelemetry" "Output should list opentelemetry as a discovered tool"
+    assert_output_contains "cert-manager" "Output should list cert-manager as a discovered tool"
+    assert_output_not_contains "current_incompatibility" "No current incompatibilities expected between OTel and cert-manager"
+
+    uninstall_opentelemetry_kubectl
+    uninstall_cert_manager
+}
+
+# ══════════════════════════════════════════════
 # Run all tests
 # ══════════════════════════════════════════════
 main() {
@@ -534,6 +560,7 @@ main() {
     test_jaeger_incompatible
     test_opentelemetry_compatible
     test_mixed_tier2
+    test_inter_tool_compatibility
 
     echo ""
     echo "========================================="
