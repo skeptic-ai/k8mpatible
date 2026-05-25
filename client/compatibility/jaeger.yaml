@@ -1,0 +1,66 @@
+nodes:
+  - name: jaeger
+    docUrl: https://www.jaegertracing.io/docs/latest/operator/
+    kubernetesResource:
+      - name: jaeger
+        namespace: observability
+        type: deployment
+        labels:
+          app: jaeger
+          app.kubernetes.io/name: jaeger
+        image: jaegertracing/jaeger
+edges:
+  # Jaeger Operator / Jaeger compatibility with Kubernetes
+  # Jaeger Operator supports N-2 Kubernetes versions
+  # Jaeger v2 uses OpenTelemetry Operator for deployment
+  # https://github.com/jaegertracing/jaeger-operator/blob/main/COMPATIBILITY.md
+  - source: jaeger
+    sourceVersion: 1.62
+    destination: Kubernetes
+    versionRange: ">=1.19, <=1.30"
+    compatible: true
+  - source: jaeger
+    sourceVersion: 1.61
+    destination: Kubernetes
+    versionRange: ">=1.19, <=1.30"
+    compatible: true
+  - source: jaeger
+    sourceVersion: 1.60
+    destination: Kubernetes
+    versionRange: ">=1.19, <=1.30"
+    compatible: true
+  - source: jaeger
+    sourceVersion: 1.59
+    destination: Kubernetes
+    versionRange: ">=1.19, <=1.28"
+    compatible: true
+  - source: jaeger
+    sourceVersion: 1.57
+    destination: Kubernetes
+    versionRange: ">=1.19, <=1.28"
+    compatible: true
+  - source: jaeger
+    sourceVersion: 1.56
+    destination: Kubernetes
+    versionRange: ">=1.19, <=1.28"
+    compatible: true
+  - source: jaeger
+    sourceVersion: 1.55
+    destination: Kubernetes
+    versionRange: ">=1.19, <=1.28"
+    compatible: true
+  - source: jaeger
+    sourceVersion: 1.54
+    destination: Kubernetes
+    versionRange: ">=1.19, <=1.28"
+    compatible: true
+  - source: jaeger
+    sourceVersion: 1.53
+    destination: Kubernetes
+    versionRange: ">=1.19, <=1.28"
+    compatible: true
+  - source: jaeger
+    sourceVersion: 1.52
+    destination: Kubernetes
+    versionRange: ">=1.19, <=1.28"
+    compatible: true

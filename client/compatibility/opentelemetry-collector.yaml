@@ -1,0 +1,454 @@
+nodes:
+  - name: opentelemetry-collector
+    docUrl: https://github.com/open-telemetry/opentelemetry-operator/blob/main/docs/compatibility.md
+    kubernetesResource:
+      - name: opentelemetry-collector
+        namespace: opentelemetry
+        type: deployment
+        labels:
+          app.kubernetes.io/name: opentelemetry-collector
+        image: otel/opentelemetry-collector-contrib
+edges:
+  # OpenTelemetry Operator / Collector compatibility with Kubernetes
+  # https://github.com/open-telemetry/opentelemetry-operator/blob/main/docs/compatibility.md#compatibility-matrix
+  #
+  # Compatibility matrix (operator version -> supported versions):
+  # Operator  | Kubernetes    | Cert-Manager | Prometheus-Operator
+  # v0.151.0  | v1.25–v1.35  | v1           | v0.91.0
+  # v0.150.0  | v1.25–v1.35  | v1           | v0.90.1
+  # v0.149.0  | v1.25–v1.35  | v1           | v0.90.1
+  # v0.148.0  | v1.25–v1.35  | v1           | v0.89.0
+  # v0.147.0  | v1.25–v1.35  | v1           | v0.89.0
+  # v0.146.0  | v1.25–v1.35  | v1           | v0.89.0
+  # v0.145.0  | v1.25–v1.35  | v1           | v0.89.0
+  # v0.144.0  | v1.25–v1.35  | v1           | v0.88.0
+  # v0.143.0  | v1.25–v1.35  | v1           | v0.87.1
+  # v0.142.0  | v1.25–v1.34  | v1           | v0.87.1
+  # v0.141.0  | v1.25–v1.34  | v1           | v0.81.0
+  # v0.140.0  | v1.25–v1.33  | v1           | v0.81.0
+  # v0.139.0  | v1.25–v1.33  | v1           | v0.81.0
+  # v0.138.0  | v1.25–v1.33  | v1           | v0.81.0
+  # v0.137.0  | v1.25–v1.33  | v1           | v0.81.0
+  # v0.136.0  | v1.25–v1.33  | v1           | v0.81.0
+  # v0.135.0  | v1.25–v1.33  | v1           | v0.81.0
+  # v0.134.0  | v1.25–v1.33  | v1           | v0.81.0
+  # v0.132.0  | v1.25–v1.33  | v1           | v0.81.0
+  # v0.131.0  | v1.25–v1.33  | v1           | v0.81.0
+  # v0.129.1  | v1.23–v1.33  | v1           | v0.81.0
+  # v0.127.0  | v1.23–v1.32  | v1           | v0.80.1
+  # v0.126.0  | v1.23–v1.32  | v1           | v0.80.1
+  # v0.125.0  | v1.23–v1.32  | v1           | v0.80.1
+  # v0.124.0  | v1.23–v1.32  | v1           | v0.80.1
+  # v0.123.0  | v1.23–v1.32  | v1           | v0.80.1
+  # v0.122.0  | v1.23–v1.32  | v1           | v0.80.1
+
+  # Kubernetes edges
+  - source: opentelemetry-collector
+    sourceVersion: 0.151
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.35"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.150
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.35"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.149
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.35"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.148
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.35"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.147
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.35"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.146
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.35"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.145
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.35"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.144
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.35"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.143
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.35"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.142
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.34"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.141
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.34"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.140
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.33"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.139
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.33"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.138
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.33"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.137
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.33"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.136
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.33"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.135
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.33"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.134
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.33"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.132
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.33"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.131
+    destination: Kubernetes
+    versionRange: ">=1.25, <=1.33"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.129
+    destination: Kubernetes
+    versionRange: ">=1.23, <=1.33"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.127
+    destination: Kubernetes
+    versionRange: ">=1.23, <=1.32"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.126
+    destination: Kubernetes
+    versionRange: ">=1.23, <=1.32"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.125
+    destination: Kubernetes
+    versionRange: ">=1.23, <=1.32"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.124
+    destination: Kubernetes
+    versionRange: ">=1.23, <=1.32"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.123
+    destination: Kubernetes
+    versionRange: ">=1.23, <=1.32"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.122
+    destination: Kubernetes
+    versionRange: ">=1.23, <=1.32"
+    compatible: true
+
+  # Cert-Manager edges (all operator versions require cert-manager v1)
+  - source: opentelemetry-collector
+    sourceVersion: 0.151
+    destination: cert-manager
+    versionRange: ">=1.0"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.150
+    destination: cert-manager
+    versionRange: ">=1.0"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.149
+    destination: cert-manager
+    versionRange: ">=1.0"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.148
+    destination: cert-manager
+    versionRange: ">=1.0"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.147
+    destination: cert-manager
+    versionRange: ">=1.0"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.146
+    destination: cert-manager
+    versionRange: ">=1.0"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.145
+    destination: cert-manager
+    versionRange: ">=1.0"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.144
+    destination: cert-manager
+    versionRange: ">=1.0"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.143
+    destination: cert-manager
+    versionRange: ">=1.0"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.142
+    destination: cert-manager
+    versionRange: ">=1.0"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.141
+    destination: cert-manager
+    versionRange: ">=1.0"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.140
+    destination: cert-manager
+    versionRange: ">=1.0"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.139
+    destination: cert-manager
+    versionRange: ">=1.0"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.138
+    destination: cert-manager
+    versionRange: ">=1.0"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.137
+    destination: cert-manager
+    versionRange: ">=1.0"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.136
+    destination: cert-manager
+    versionRange: ">=1.0"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.135
+    destination: cert-manager
+    versionRange: ">=1.0"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.134
+    destination: cert-manager
+    versionRange: ">=1.0"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.132
+    destination: cert-manager
+    versionRange: ">=1.0"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.131
+    destination: cert-manager
+    versionRange: ">=1.0"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.129
+    destination: cert-manager
+    versionRange: ">=1.0"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.127
+    destination: cert-manager
+    versionRange: ">=1.0"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.126
+    destination: cert-manager
+    versionRange: ">=1.0"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.125
+    destination: cert-manager
+    versionRange: ">=1.0"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.124
+    destination: cert-manager
+    versionRange: ">=1.0"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.123
+    destination: cert-manager
+    versionRange: ">=1.0"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.122
+    destination: cert-manager
+    versionRange: ">=1.0"
+    compatible: true
+
+  # Prometheus-Operator edges
+  - source: opentelemetry-collector
+    sourceVersion: 0.151
+    destination: prometheus-operator
+    versionRange: ">=0.91.0"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.150
+    destination: prometheus-operator
+    versionRange: ">=0.90.1"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.149
+    destination: prometheus-operator
+    versionRange: ">=0.90.1"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.148
+    destination: prometheus-operator
+    versionRange: ">=0.89.0"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.147
+    destination: prometheus-operator
+    versionRange: ">=0.89.0"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.146
+    destination: prometheus-operator
+    versionRange: ">=0.89.0"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.145
+    destination: prometheus-operator
+    versionRange: ">=0.89.0"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.144
+    destination: prometheus-operator
+    versionRange: ">=0.88.0"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.143
+    destination: prometheus-operator
+    versionRange: ">=0.87.1"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.142
+    destination: prometheus-operator
+    versionRange: ">=0.87.1"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.141
+    destination: prometheus-operator
+    versionRange: ">=0.81.0"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.140
+    destination: prometheus-operator
+    versionRange: ">=0.81.0"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.139
+    destination: prometheus-operator
+    versionRange: ">=0.81.0"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.138
+    destination: prometheus-operator
+    versionRange: ">=0.81.0"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.137
+    destination: prometheus-operator
+    versionRange: ">=0.81.0"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.136
+    destination: prometheus-operator
+    versionRange: ">=0.81.0"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.135
+    destination: prometheus-operator
+    versionRange: ">=0.81.0"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.134
+    destination: prometheus-operator
+    versionRange: ">=0.81.0"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.132
+    destination: prometheus-operator
+    versionRange: ">=0.81.0"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.131
+    destination: prometheus-operator
+    versionRange: ">=0.81.0"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.129
+    destination: prometheus-operator
+    versionRange: ">=0.81.0"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.127
+    destination: prometheus-operator
+    versionRange: ">=0.80.1"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.126
+    destination: prometheus-operator
+    versionRange: ">=0.80.1"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.125
+    destination: prometheus-operator
+    versionRange: ">=0.80.1"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.124
+    destination: prometheus-operator
+    versionRange: ">=0.80.1"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.123
+    destination: prometheus-operator
+    versionRange: ">=0.80.1"
+    compatible: true
+  - source: opentelemetry-collector
+    sourceVersion: 0.122
+    destination: prometheus-operator
+    versionRange: ">=0.80.1"
+    compatible: true

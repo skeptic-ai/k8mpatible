@@ -27,7 +27,7 @@ jobs:
       - name: Create KIND cluster
         uses: helm/kind-action@v1
         with:
-          node_image: kindest/node:v1.31.4
+          node_image: kindest/node:v1.32.2
           cluster_name: k8mpatible-e2e
           wait: 120s
 
