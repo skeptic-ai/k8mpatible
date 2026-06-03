@@ -109,3 +109,13 @@ edges:
     destination: Kubernetes
     versionRange: ">=1.22, <=1.35"
     compatible: true
+  - source: aws-load-balancer-controller
+    sourceVersion: 3.2
+    destination: Kubernetes
+    versionRange: ">=1.22, <=1.35"
+    compatible: true
+  - source: aws-load-balancer-controller
+    sourceVersion: 3.3
+    destination: Kubernetes
+    versionRange: ">=1.22, <=1.35"
+    compatible: true
