@@ -29,6 +29,18 @@ echo "Using KIND cluster: ${CLUSTER_NAME}"
 kubectl cluster-info
 kubectl wait --for=condition=Ready nodes --all --timeout=120s
 
+# Pre-add helm repos to avoid repeated calls in each install function
+echo "--- Pre-loading Helm repositories ---"
+helm repo add jetstack https://charts.jetstack.io --force-update
+helm repo add istio https://istio-release.storage.googleapis.com/charts --force-update
+helm repo add kedacore https://kedacore.github.io/charts --force-update
+helm repo add vmware-tanzu https://vmware-tanzu.github.io/helm-charts --force-update
+helm repo add gatekeeper https://open-policy-agent.github.io/gatekeeper/charts --force-update
+helm repo add jaegertracing https://jaegertracing.github.io/helm-charts --force-update
+helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm-charts --force-update
+helm repo add kyverno https://kyverno.github.io/kyverno --force-update
+helm repo update
+
 # ── Helper: run k8mpatible and capture output ──
 
 run_k8mpatible() {
@@ -94,8 +106,6 @@ assert_output_not_contains() {
 install_cert_manager() {
     local version="$1"
     echo "--- Installing cert-manager ${version} ---"
-    helm repo add jetstack https://charts.jetstack.io --force-update
-    helm repo update jetstack
     helm install cert-manager jetstack/cert-manager \
         --namespace cert-manager --create-namespace \
         --version "${version}" \
@@ -114,8 +124,6 @@ uninstall_cert_manager() {
 install_istio() {
     local version="$1"
     echo "--- Installing Istio ${version} (istiod only) ---"
-    helm repo add istio https://istio-release.storage.googleapis.com/charts --force-update
-    helm repo update istio
     helm install istio-base istio/base \
         --namespace istio-system --create-namespace \
         --version "${version}" \
@@ -138,8 +146,6 @@ uninstall_istio() {
 install_keda() {
     local version="$1"
     echo "--- Installing KEDA ${version} ---"
-    helm repo add kedacore https://kedacore.github.io/charts --force-update
-    helm repo update kedacore
     helm install keda kedacore/keda \
         --namespace keda --create-namespace \
         --version "${version}" \
@@ -157,8 +163,6 @@ uninstall_keda() {
 install_velero() {
     local version="$1"
     echo "--- Installing Velero ${version} ---"
-    helm repo add vmware-tanzu https://vmware-tanzu.github.io/helm-charts --force-update
-    helm repo update vmware-tanzu
     helm install velero vmware-tanzu/velero \
         --namespace velero --create-namespace \
         --version "${version}" \
@@ -188,8 +192,6 @@ uninstall_velero() {
 install_gatekeeper() {
     local version="$1"
     echo "--- Installing Gatekeeper ${version} ---"
-    helm repo add gatekeeper https://open-policy-agent.github.io/gatekeeper/charts --force-update
-    helm repo update gatekeeper
     helm install gatekeeper gatekeeper/gatekeeper \
         --namespace gatekeeper-system --create-namespace \
         --version "${version}" \
@@ -202,79 +204,59 @@ uninstall_gatekeeper() {
     kubectl delete namespace gatekeeper-system --wait=true 2>/dev/null || true
 }
 
-# ── Jaeger (kubectl-based, similar to Kyverno approach) ──
+# ── Jaeger (Helm-based using jaegertracing/jaeger-operator chart) ──
 
-install_jaeger_kubectl() {
-    local app_version="$1"
-    echo "--- Installing Jaeger ${app_version} via kubectl ---"
-    kubectl create namespace observability --dry-run=client -o yaml | kubectl apply -f -
-    kubectl create deployment jaeger \
-        --namespace observability \
-        --image "jaegertracing/jaeger:${app_version}" \
-        --dry-run=client -o yaml | kubectl apply -f -
-    # Add required labels for k8mpatible discovery
-    kubectl label deployment jaeger \
-        --namespace observability \
-        app=jaeger \
-        app.kubernetes.io/name=jaeger \
-        --overwrite
-    # No kubectl wait — deployment only needs to exist for discovery, not be Available
-    sleep 5
+install_jaeger() {
+    local version="$1"
+    echo "--- Installing Jaeger ${version} via Helm ---"
+    helm install jaeger-operator jaegertracing/jaeger-operator \
+        --namespace observability --create-namespace \
+        --version "${version}" \
+        --set jaeger.create=true \
+        --set jaeger.namespace=observability \
+        --wait --timeout 180s
 }
 
-uninstall_jaeger_kubectl() {
+uninstall_jaeger() {
     echo "--- Uninstalling Jaeger ---"
-    kubectl delete deployment jaeger --namespace observability --wait 2>/dev/null || true
+    helm uninstall jaeger-operator --namespace observability --wait 2>/dev/null || true
     kubectl delete namespace observability --wait=true 2>/dev/null || true
 }
 
-# ── OpenTelemetry Collector (kubectl-based) ──
+# ── OpenTelemetry Collector (Helm-based using open-telemetry/opentelemetry-collector chart) ──
 
-install_opentelemetry_kubectl() {
-    local app_version="$1"
-    echo "--- Installing OpenTelemetry Collector ${app_version} via kubectl ---"
-    kubectl create namespace opentelemetry --dry-run=client -o yaml | kubectl apply -f -
-    kubectl create deployment opentelemetry-collector \
-        --namespace opentelemetry \
-        --image "otel/opentelemetry-collector-contrib:${app_version}" \
-        --dry-run=client -o yaml | kubectl apply -f -
-    # Add required labels for k8mpatible discovery
-    kubectl label deployment opentelemetry-collector \
-        --namespace opentelemetry \
-        app.kubernetes.io/name=opentelemetry-collector \
-        --overwrite
-    sleep 5
+install_opentelemetry() {
+    local version="$1"
+    echo "--- Installing OpenTelemetry Collector ${version} via Helm ---"
+    helm install opentelemetry-collector open-telemetry/opentelemetry-collector \
+        --namespace opentelemetry --create-namespace \
+        --version "${version}" \
+        --set mode=deployment \
+        --set image.repository=otel/opentelemetry-collector-contrib \
+        --wait --timeout 180s
 }
 
-uninstall_opentelemetry_kubectl() {
+uninstall_opentelemetry() {
     echo "--- Uninstalling OpenTelemetry Collector ---"
-    kubectl delete deployment opentelemetry-collector --namespace opentelemetry --wait 2>/dev/null || true
+    helm uninstall opentelemetry-collector --namespace opentelemetry --wait 2>/dev/null || true
     kubectl delete namespace opentelemetry --wait=true 2>/dev/null || true
 }
 
-# ── Kyverno (kubectl-based, avoiding Helm chart version mismatch) ──
+# ── Kyverno (Helm-based using kyverno/kyverno chart) ──
 
-install_kyverno_kubectl() {
-    local app_version="$1"
-    echo "--- Installing Kyverno ${app_version} via kubectl ---"
-    kubectl create namespace kyverno --dry-run=client -o yaml | kubectl apply -f -
-    kubectl create deployment kyverno-admission-controller \
-        --namespace kyverno \
-        --image "ghcr.io/kyverno/kyverno:${app_version}" \
-        --dry-run=client -o yaml | kubectl apply -f -
-    # Add required labels for k8mpatible discovery
-    kubectl label deployment kyverno-admission-controller \
-        --namespace kyverno \
-        app.kubernetes.io/name=kyverno \
-        app.kubernetes.io/component=admission-controller \
-        --overwrite
-    # No kubectl wait — deployment only needs to exist for discovery, not be Available
-    sleep 5
+install_kyverno() {
+    local version="$1"
+    echo "--- Installing Kyverno ${version} via Helm ---"
+    helm install kyverno kyverno/kyverno \
+        --namespace kyverno --create-namespace \
+        --version "${version}" \
+        --set crds.install=true \
+        --wait --timeout 180s
 }
 
-uninstall_kyverno_kubectl() {
+uninstall_kyverno() {
     echo "--- Uninstalling Kyverno ---"
-    kubectl delete deployment kyverno-admission-controller --namespace kyverno --wait 2>/dev/null || true
+    helm uninstall kyverno --namespace kyverno --wait 2>/dev/null || true
     kubectl delete namespace kyverno --wait=true 2>/dev/null || true
 }
 
@@ -368,9 +350,9 @@ test_keda_compatible() {
 }
 
 # ══════════════════════════════════════════════
-# Test 5: Tier-1 tool incompatible — Kyverno (kubectl-based)
+# Test 5: Tier-1 tool incompatible — Kyverno (Helm-based)
 #   Kyverno 1.12.x on K8s 1.31 -> incompatible (range >=1.26, <=1.29)
-#   Uses kubectl create deployment to avoid Helm chart version mismatch
+#   Uses Helm chart version 3.2.8 (appVersion v1.12.6)
 # ══════════════════════════════════════════════
 test_kyverno_incompatible() {
     echo ""
@@ -378,14 +360,14 @@ test_kyverno_incompatible() {
     echo "TEST 5: Kyverno incompatible (tier-1 tool)"
     echo "========================================="
 
-    install_kyverno_kubectl "v1.12.6"
+    install_kyverno "3.2.8"
 
     run_k8mpatible
 
     assert_exit_code 1 "Incompatible Kyverno should produce exit code 1"
     assert_output_contains "kyverno" "Output should list kyverno as a discovered tool"
 
-    uninstall_kyverno_kubectl
+    uninstall_kyverno
 }
 
 # ══════════════════════════════════════════════
@@ -400,7 +382,7 @@ test_mixed_tier1() {
     echo "========================================="
 
     install_keda "2.18.0"
-    install_kyverno_kubectl "v1.12.6"
+    install_kyverno "3.2.8"
 
     run_k8mpatible
 
@@ -408,7 +390,7 @@ test_mixed_tier1() {
     assert_output_contains "keda" "Output should list keda"
     assert_output_contains "kyverno" "Output should list kyverno"
 
-    uninstall_kyverno_kubectl
+    uninstall_kyverno
     uninstall_keda
 }
 
@@ -455,38 +437,40 @@ test_gatekeeper_incompatible() {
 }
 
 # ══════════════════════════════════════════════
-# Test 9: Tier-2 tool incompatible — Jaeger (kubectl)
-#   Jaeger Operator 1.62 supports K8s 1.19–1.30
+# Test 9: Tier-2 tool incompatible — Jaeger (Helm-based)
+#   Jaeger Operator 1.61.x supports K8s 1.19–1.30
 #   On K8s 1.31 -> incompatible
+#   Uses jaeger-operator chart version 2.57.0 (appVersion 1.61.0)
 # ══════════════════════════════════════════════
 test_jaeger_incompatible() {
     echo ""
     echo "========================================="
-    echo "TEST 9: Jaeger incompatible (tier-2 tool, kubectl)"
+    echo "TEST 9: Jaeger incompatible (tier-2 tool, Helm)"
     echo "========================================="
 
-    install_jaeger_kubectl "1.62.0"
+    install_jaeger "2.57.0"
 
     run_k8mpatible
 
     assert_exit_code 1 "Incompatible Jaeger should produce exit code 1"
     assert_output_contains "jaeger" "Output should list jaeger as a discovered tool"
 
-    uninstall_jaeger_kubectl
+    uninstall_jaeger
 }
 
 # ══════════════════════════════════════════════
-# Test 10: Tier-2 tool compatible — OpenTelemetry Collector (kubectl)
-#   OpenTelemetry Collector 0.129 (range >=1.23, <=1.33)
+# Test 10: Tier-2 tool compatible — OpenTelemetry Collector (Helm-based)
+#   OpenTelemetry Collector 0.128.x (range >=1.23, <=1.33)
 #   On K8s 1.31 -> compatible (includes 1.31 and upgrade target 1.32)
+#   Uses opentelemetry-collector chart version 0.128.0 (appVersion 0.129.1)
 # ══════════════════════════════════════════════
 test_opentelemetry_compatible() {
     echo ""
     echo "========================================="
-    echo "TEST 10: OpenTelemetry Collector compatible (tier-2 tool, kubectl)"
+    echo "TEST 10: OpenTelemetry Collector compatible (tier-2 tool, Helm)"
     echo "========================================="
 
-    install_opentelemetry_kubectl "0.129.0"
+    install_opentelemetry "0.128.0"
 
     run_k8mpatible
 
@@ -494,7 +478,7 @@ test_opentelemetry_compatible() {
     assert_output_contains "opentelemetry" "Output should list opentelemetry as a discovered tool"
     assert_output_not_contains "current_incompatibility" "No current incompatibilities expected"
 
-    uninstall_opentelemetry_kubectl
+    uninstall_opentelemetry
 }
 
 # ══════════════════════════════════════════════
@@ -523,7 +507,7 @@ test_mixed_tier2() {
 
 # ══════════════════════════════════════════════
 # Test 12: Inter-tool compatibility — OpenTelemetry Collector + cert-manager
-#   OpenTelemetry Collector 0.129 requires cert-manager >= 1.0
+#   OpenTelemetry Collector 0.128.x requires cert-manager >= 1.0
 #   cert-manager 1.17 is compatible with K8s 1.32
 #   Both should be discovered and inter-tool compatibility should pass
 # ══════════════════════════════════════════════
@@ -534,7 +518,7 @@ test_inter_tool_compatibility() {
     echo "========================================="
 
     install_cert_manager "v1.17.2"
-    install_opentelemetry_kubectl "0.129.0"
+    install_opentelemetry "0.128.0"
 
     run_k8mpatible
 
@@ -543,7 +527,7 @@ test_inter_tool_compatibility() {
     assert_output_contains "cert-manager" "Output should list cert-manager as a discovered tool"
     assert_output_not_contains "current_incompatibility" "No current incompatibilities expected between OTel and cert-manager"
 
-    uninstall_opentelemetry_kubectl
+    uninstall_opentelemetry
     uninstall_cert_manager
 }
 
