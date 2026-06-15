@@ -168,10 +168,12 @@ uninstall_keda() {
 install_velero() {
     local version="$1"
     echo "--- Installing Velero ${version} ---"
+    # Velero chart v11+ uses new configuration structure:
+    # - configuration.provider removed, provider now per backupStorageLocation/volumeSnapshotLocation
+    # - credentials.secretContents moved to credentials.secretContents.cloud
     helm install velero vmware-tanzu/velero \
         --namespace velero --create-namespace \
         --version "${version}" \
-        --set configuration.provider=aws \
         --set configuration.backupStorageLocation[0].name=default \
         --set configuration.backupStorageLocation[0].provider=aws \
         --set configuration.backupStorageLocation[0].bucket=test-bucket \
