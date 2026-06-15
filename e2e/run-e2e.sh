@@ -172,10 +172,10 @@ install_velero() {
         --namespace velero --create-namespace \
         --version "${version}" \
         --set configuration.provider=aws \
-        --set configuration.backupStorageLocation.name=default \
-        --set configuration.backupStorageLocation.config.region=us-east-1 \
-        --set configuration.volumeSnapshotLocation.name=default \
-        --set configuration.volumeSnapshotLocation.config.region=us-east-1 \
+        --set configuration.backupStorageLocation[0].name=default \
+        --set configuration.backupStorageLocation[0].config.region=us-east-1 \
+        --set configuration.volumeSnapshotLocation[0].name=default \
+        --set configuration.volumeSnapshotLocation[0].config.region=us-east-1 \
         --set initContainers[0].name=velero-plugin-for-aws \
         --set initContainers[0].image=velero/velero-plugin-for-aws:v1.12.0 \
         --set initContainers[0].volumeMounts[0].mountPath=/target \
@@ -330,8 +330,8 @@ test_mixed_compatibility() {
 
 # ══════════════════════════════════════════════
 # Test 4: Tier-1 tool compatible — KEDA
-#   KEDA 2.17.x on K8s 1.31 -> compatible (range >=1.30, <=1.32)
-#   Must also survive upgrade simulation (1.31→1.32), so range must include 1.32
+#   KEDA 2.18.x on K8s 1.32 -> compatible (range >=1.31, <=1.33)
+#   Must also survive upgrade simulation (1.32→1.33), so range must include 1.33
 # ══════════════════════════════════════════════
 test_keda_compatible() {
     echo ""
@@ -339,7 +339,7 @@ test_keda_compatible() {
     echo "TEST 4: KEDA compatible (tier-1 tool)"
     echo "========================================="
 
-    install_keda "2.17.0"
+    install_keda "2.18.0"
 
     run_k8mpatible
 
@@ -374,7 +374,7 @@ test_kyverno_incompatible() {
 
 # ══════════════════════════════════════════════
 # Test 6: Mixed tier-1 tools (compatible + incompatible)
-#   KEDA 2.17.x (compatible, range >=1.30, <=1.32)
+#   KEDA 2.18.x (compatible, range >=1.31, <=1.33)
 #   + Kyverno 1.12.x (incompatible, range >=1.26, <=1.29)
 #   Helm chart v3.2.6 corresponds to Kyverno v1.12.x
 # ══════════════════════════════════════════════
@@ -384,7 +384,7 @@ test_mixed_tier1() {
     echo "TEST 6: Mixed tier-1 tools (KEDA compatible + Kyverno incompatible)"
     echo "========================================="
 
-    install_keda "2.17.0"
+    install_keda "2.18.0"
     install_kyverno "3.2.6"
 
     run_k8mpatible
