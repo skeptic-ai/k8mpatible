@@ -12,6 +12,11 @@ edges:
   # Prometheus Operator compatibility with Kubernetes
   # Based on Go client-go version mapping and CEL requirement (>= v0.84.0 needs K8s >= 1.25)
   - source: prometheus-operator
+    sourceVersion: 0.92
+    destination: Kubernetes
+    versionRange: ">=1.33, <=1.36"
+    compatible: true
+  - source: prometheus-operator
     sourceVersion: 0.91
     destination: Kubernetes
     versionRange: ">=1.33, <=1.35"
