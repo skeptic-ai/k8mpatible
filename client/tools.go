@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
+	"strings"
 
 	"github.com/Masterminds/semver/v3"
 	"gopkg.in/yaml.v2"
@@ -38,6 +39,18 @@ func LoadGraphFromYAML(filename string) (*Graph, error) {
 
 // CheckCompatibility checks if two tools with specific versions are compatible.
 func (g *Graph) CheckCompatibility(sourceName string, sourceVersion *semver.Version, destName string, destVersion *semver.Version) (int, string) {
+	comparisonVersion := destVersion
+	if destName == Kubernetes {
+		// EKS/GKE put provider build identifiers in semver's prerelease field.
+		// Compare these builds using the upstream release, retaining its patch.
+		// Leave real prereleases and all non-Kubernetes versions untouched.
+		for _, prefix := range []string{"eksbuild.", "eks-", "gke."} {
+			if strings.HasPrefix(destVersion.Prerelease(), prefix) {
+				comparisonVersion = semver.New(destVersion.Major(), destVersion.Minor(), destVersion.Patch(), "", destVersion.Metadata())
+				break
+			}
+		}
+	}
 	for _, edge := range g.Edges {
 
 		if edge.SourceName == sourceName && edge.DestinationName == destName {
@@ -46,7 +59,7 @@ func (g *Graph) CheckCompatibility(sourceName string, sourceVersion *semver.Vers
 			destIncremented := sourceVersion.IncMinor()
 			if edgeIncremented.Equal(&destIncremented) {
 				Logger.Info("Sources matched for", "range", edge.DestinationVersionRange, "version", destVersion)
-				matched, err := edge.DestinationVersionRange.Validate(destVersion)
+				matched, err := edge.DestinationVersionRange.Validate(comparisonVersion)
 
 				if len(err) > 0 {
 					// fmt.Println("error validating version range: %s", err)
