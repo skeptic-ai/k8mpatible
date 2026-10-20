@@ -10,39 +10,60 @@ nodes:
           app.kubernetes.io/component: controller
         image: cert-manager-controller
 edges:
+  # Researched 2026-10-20: official current and old-release matrices; latest release v1.21.2.
+  # https://cert-manager.io/docs/releases/#currently-supported-releases
+  # https://github.com/cert-manager/cert-manager/releases/tag/v1.21.2
+  # Kubernetes 1.35: cert-manager 1.19-1.21; 1.36: 1.21 only.
+  # No published 1.35/1.36 evidence for older minors; unknown is not incompatible.
+  # 1.22 is upcoming, not released. Historical/EOL compatibility is retained.
+  # Inclusive matrix maxima use <next minor so all patches are covered.
   - source: cert-manager
-    sourceVersion: 1.19
+    sourceVersion: "1.21"
     destination: Kubernetes
-    versionRange: ">=1.32, <=1.35"
+    versionRange: ">=1.33, <1.37"
     compatible: true
   - source: cert-manager
-    sourceVersion: 1.19
+    sourceVersion: "1.20"
     destination: Kubernetes
-    versionRange: ">=1.31, <=1.35"
+    versionRange: ">=1.32, <1.36"
     compatible: true
   - source: cert-manager
-    sourceVersion: 1.18
+    sourceVersion: "1.19"
     destination: Kubernetes
-    versionRange: ">=1.29, <=1.33"
+    versionRange: ">=1.31, <1.36"
     compatible: true
   - source: cert-manager
-    sourceVersion: 1.17
+    sourceVersion: "1.18"
     destination: Kubernetes
-    versionRange: ">=1.29, <=1.33"
+    versionRange: ">=1.29, <1.34"
     compatible: true
   - source: cert-manager
-    sourceVersion: 1.16
+    sourceVersion: "1.17"
     destination: Kubernetes
-    versionRange: ">=1.25, <=1.33"
+    versionRange: ">=1.29, <1.34"
     compatible: true
   - source: cert-manager
-    sourceVersion: 1.15
+    sourceVersion: "1.16"
     destination: Kubernetes
-    versionRange: ">=1.25, <=1.31"
+    versionRange: ">=1.25, <1.33"
     compatible: true
-
   - source: cert-manager
-    sourceVersion: 1.12
+    sourceVersion: "1.15"
     destination: Kubernetes
-    versionRange: ">=1.22, <=1.32"
+    versionRange: ">=1.25, <1.33"
+    compatible: true
+  - source: cert-manager
+    sourceVersion: "1.14"
+    destination: Kubernetes
+    versionRange: ">=1.24, <1.32"
+    compatible: true
+  - source: cert-manager
+    sourceVersion: "1.13"
+    destination: Kubernetes
+    versionRange: ">=1.21, <1.28"
+    compatible: true
+  - source: cert-manager
+    sourceVersion: "1.12"
+    destination: Kubernetes
+    versionRange: ">=1.22, <1.33"
     compatible: true

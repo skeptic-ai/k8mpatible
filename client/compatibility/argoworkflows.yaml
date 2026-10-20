@@ -1,6 +1,14 @@
+# Researched 2026-10-20: latest stable v4.1.5.
+# Releases: https://github.com/argoproj/argo-workflows/releases
+# Tested minors: https://argo-workflows.readthedocs.io/en/release-4.1/releases/#tested-versions
+# Historical evidence: same page under release-4.0, release-3.7, release-3.6 and release-3.5.
+# Only the two explicitly tested minors are encoded for 3.6/3.7/4.0/4.1;
+# disjunctions deliberately do not interpolate untested intermediate minors.
+# Kubernetes 1.36: 4.1 tests v1.36.2 (also v1.34.9). 1.35: undocumented/untested.
+# No explicit incompatible edges are inferred from missing test coverage.
 nodes:
   - name: argoworkflows
-    docUrl: https://argo-workflows.readthedocs.io/en/release-3.6/releases/#tested-versions
+    docUrl: https://argo-workflows.readthedocs.io/en/release-4.1/releases/#tested-versions
     kubernetesResource:
       - name: argo-workflows-controller
         namespace: argo
@@ -11,22 +19,27 @@ nodes:
         image: argoproj/workflow-controller
 edges:
   - source: argoworkflows
-    sourceVersion: 4.0
+    sourceVersion: "4.1"
     destination: Kubernetes
-    versionRange: ">=1.31, <=1.33"
+    versionRange: ">=1.34, <1.35 || >=1.36, <1.37"
     compatible: true
   - source: argoworkflows
-    sourceVersion: 3.7
+    sourceVersion: "4.0"
     destination: Kubernetes
-    versionRange: ">=1.31, <=1.33"
+    versionRange: ">=1.31, <1.32 || >=1.33, <1.34"
     compatible: true
   - source: argoworkflows
-    sourceVersion: 3.6
+    sourceVersion: "3.7"
     destination: Kubernetes
-    versionRange: ">=1.28, <=1.31"
+    versionRange: ">=1.31, <1.32 || >=1.33, <1.34"
     compatible: true
   - source: argoworkflows
-    sourceVersion: 3.5
+    sourceVersion: "3.6"
     destination: Kubernetes
-    versionRange: ">=1.28, <=1.30"
+    versionRange: ">=1.28, <1.29 || >=1.31, <1.32"
+    compatible: true
+  - source: argoworkflows
+    sourceVersion: "3.5"
+    destination: Kubernetes
+    versionRange: ">=1.28, <1.31"
     compatible: true

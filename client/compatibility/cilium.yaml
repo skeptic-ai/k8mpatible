@@ -9,45 +9,64 @@ nodes:
           k8s-app: cilium
         image: cilium/cilium
 edges:
-  # Cilium compatibility with Kubernetes based on e2e tested versions
+  # Researched 2026-10-20: released, version-specific e2e matrices; latest v1.20.3.
   # https://docs.cilium.io/en/stable/network/kubernetes/compatibility/
+  # https://github.com/cilium/cilium/releases/tag/v1.20.3
+  # Kubernetes 1.35: Cilium 1.19-1.20; 1.36: 1.20 only.
+  # No published 1.35/1.36 evidence for earlier minors; do not extrapolate.
+  # Unlisted versions are unknown, not incompatible; CRD schema versions are not Kubernetes support.
+  # Inclusive matrix maxima use <next minor so all patches are covered.
+  # https://docs.cilium.io/en/v1.20/network/kubernetes/compatibility/
   - source: cilium
-    sourceVersion: 1.19
+    sourceVersion: "1.20"
     destination: Kubernetes
-    versionRange: ">=1.32, <=1.35"
+    versionRange: ">=1.33, <1.37"
     compatible: true
+  # https://docs.cilium.io/en/v1.19/network/kubernetes/compatibility/
   - source: cilium
-    sourceVersion: 1.18
+    sourceVersion: "1.19"
     destination: Kubernetes
-    versionRange: ">=1.30, <=1.34"
+    versionRange: ">=1.32, <1.36"
     compatible: true
+  # https://docs.cilium.io/en/v1.18/network/kubernetes/compatibility/
   - source: cilium
-    sourceVersion: 1.17
+    sourceVersion: "1.18"
     destination: Kubernetes
-    versionRange: ">=1.28, <=1.33"
+    versionRange: ">=1.30, <1.34"
     compatible: true
+  # https://docs.cilium.io/en/v1.17/network/kubernetes/compatibility/
   - source: cilium
-    sourceVersion: 1.16
+    sourceVersion: "1.17"
     destination: Kubernetes
-    versionRange: ">=1.27, <=1.31"
+    versionRange: ">=1.29, <1.33"
     compatible: true
+  # https://docs.cilium.io/en/v1.16/network/kubernetes/compatibility/
   - source: cilium
-    sourceVersion: 1.15
+    sourceVersion: "1.16"
     destination: Kubernetes
-    versionRange: ">=1.26, <=1.30"
+    versionRange: ">=1.27, <1.31"
     compatible: true
+  # https://docs.cilium.io/en/v1.15/network/kubernetes/compatibility/
   - source: cilium
-    sourceVersion: 1.14
+    sourceVersion: "1.15"
     destination: Kubernetes
-    versionRange: ">=1.25, <=1.29"
+    versionRange: ">=1.26, <1.30"
     compatible: true
+  # https://docs.cilium.io/en/v1.14/network/kubernetes/compatibility/
   - source: cilium
-    sourceVersion: 1.13
+    sourceVersion: "1.14"
     destination: Kubernetes
-    versionRange: ">=1.24, <=1.28"
+    versionRange: ">=1.19, <1.28"
     compatible: true
+  # https://docs.cilium.io/en/v1.13/network/kubernetes/compatibility/
   - source: cilium
-    sourceVersion: 1.12
+    sourceVersion: "1.13"
     destination: Kubernetes
-    versionRange: ">=1.21, <=1.26"
+    versionRange: ">=1.16, <1.27"
+    compatible: true
+  # https://raw.githubusercontent.com/cilium/cilium/v1.12.19/Documentation/concepts/kubernetes/compatibility.rst
+  - source: cilium
+    sourceVersion: "1.12"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.25"
     compatible: true

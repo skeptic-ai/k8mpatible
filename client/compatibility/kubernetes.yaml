@@ -1,6 +1,8 @@
 nodes:
   - name: Kubernetes
-    docUrl: "n/a"
+    # Kubernetes 1.35 and 1.36 are released; this node discovers cluster version.
+    # Tool-specific support belongs in each tool's edges, not self-compatibility.
+    docUrl: https://kubernetes.io/releases/
     kubernetesResource:
       - name: kube-proxy
         namespace: kube-system

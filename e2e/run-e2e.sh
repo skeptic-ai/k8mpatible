@@ -252,6 +252,24 @@ uninstall_opentelemetry_kubectl() {
     kubectl delete namespace opentelemetry --wait=true 2>/dev/null || true
 }
 
+# Operator fixture: discovery/integration assertions, NOT a running installation.
+# No CRDs, admission certificates, or ready controller are claimed by this helper.
+install_opentelemetry_operator_fixture() {
+    local app_version="$1"
+    kubectl create namespace opentelemetry-operator-system --dry-run=client -o yaml | kubectl apply -f -
+    kubectl create deployment opentelemetry-operator-controller-manager \
+        --namespace opentelemetry-operator-system \
+        --image "ghcr.io/open-telemetry/opentelemetry-operator/opentelemetry-operator:${app_version}" \
+        --dry-run=client -o yaml | kubectl apply -f -
+    kubectl label deployment opentelemetry-operator-controller-manager \
+        --namespace opentelemetry-operator-system \
+        app.kubernetes.io/name=opentelemetry-operator --overwrite
+}
+
+uninstall_opentelemetry_operator_fixture() {
+    kubectl delete namespace opentelemetry-operator-system --wait=true 2>/dev/null || true
+}
+
 # ── Kyverno (kubectl-based, avoiding Helm chart version mismatch) ──
 
 install_kyverno_kubectl() {
@@ -296,7 +314,7 @@ test_compatible_versions() {
     assert_exit_code 0 "Compatible cert-manager should produce exit code 0"
     assert_output_contains "cert-manager" "Output should list cert-manager as a discovered tool"
     assert_output_contains "Kubernetes" "Output should list Kubernetes"
-    assert_output_not_contains "current_incompatibility" "No current incompatibilities expected"
+    assert_output_contains "^[[:space:]]*incompatibleTools: 0$" "No current incompatibilities expected"
 
     uninstall_cert_manager
 }
@@ -362,7 +380,7 @@ test_keda_compatible() {
 
     assert_exit_code 0 "Compatible KEDA should produce exit code 0"
     assert_output_contains "keda" "Output should list keda as a discovered tool"
-    assert_output_not_contains "current_incompatibility" "No current incompatibilities expected"
+    assert_output_contains "^[[:space:]]*incompatibleTools: 0$" "No current incompatibilities expected"
 
     uninstall_keda
 }
@@ -429,7 +447,7 @@ test_velero_compatible() {
 
     assert_exit_code 0 "Compatible Velero should produce exit code 0"
     assert_output_contains "velero" "Output should list velero as a discovered tool"
-    assert_output_not_contains "current_incompatibility" "No current incompatibilities expected"
+    assert_output_contains "^[[:space:]]*incompatibleTools: 0$" "No current incompatibilities expected"
 
     uninstall_velero
 }
@@ -455,44 +473,44 @@ test_gatekeeper_incompatible() {
 }
 
 # ══════════════════════════════════════════════
-# Test 9: Tier-2 tool incompatible — Jaeger (kubectl)
-#   Jaeger Operator 1.62 supports K8s 1.19–1.30
-#   On K8s 1.31 -> incompatible
+# Test 9: Jaeger runtime discovery with unknown Kubernetes compatibility.
+#   The runtime is not the retired Jaeger Operator; do not apply its matrix.
+#   Unknown currently does not count as an incompatibility in CLI exit status.
 # ══════════════════════════════════════════════
-test_jaeger_incompatible() {
+test_jaeger_unknown() {
     echo ""
     echo "========================================="
-    echo "TEST 9: Jaeger incompatible (tier-2 tool, kubectl)"
+    echo "TEST 9: Jaeger runtime unknown (discovery fixture)"
     echo "========================================="
 
-    install_jaeger_kubectl "1.62.0"
+    install_jaeger_kubectl "2.22.0"
 
     run_k8mpatible
 
-    assert_exit_code 1 "Incompatible Jaeger should produce exit code 1"
+    assert_exit_code 0 "Unknown Jaeger runtime should not invent incompatibility"
+    assert_output_contains "^[[:space:]]*incompatibleTools: 0$" "No operator-derived runtime incompatibility expected"
     assert_output_contains "jaeger" "Output should list jaeger as a discovered tool"
 
     uninstall_jaeger_kubectl
 }
 
 # ══════════════════════════════════════════════
-# Test 10: Tier-2 tool compatible — OpenTelemetry Collector (kubectl)
-#   OpenTelemetry Collector 0.129 (range >=1.23, <=1.33)
-#   On K8s 1.31 -> compatible (includes 1.31 and upgrade target 1.32)
+# Test 10: OpenTelemetry Collector discovery with unknown runtime compatibility.
+#   The Operator matrix must not be applied to this standalone runtime.
 # ══════════════════════════════════════════════
-test_opentelemetry_compatible() {
+test_opentelemetry_unknown() {
     echo ""
     echo "========================================="
-    echo "TEST 10: OpenTelemetry Collector compatible (tier-2 tool, kubectl)"
+    echo "TEST 10: OpenTelemetry Collector unknown (discovery fixture)"
     echo "========================================="
 
     install_opentelemetry_kubectl "0.129.0"
 
     run_k8mpatible
 
-    assert_exit_code 0 "Compatible OpenTelemetry Collector should produce exit code 0"
+    assert_exit_code 0 "Unknown Collector runtime should not invent incompatibility"
     assert_output_contains "opentelemetry" "Output should list opentelemetry as a discovered tool"
-    assert_output_not_contains "current_incompatibility" "No current incompatibilities expected"
+    assert_output_contains "^[[:space:]]*incompatibleTools: 0$" "No current incompatibilities expected"
 
     uninstall_opentelemetry_kubectl
 }
@@ -522,28 +540,30 @@ test_mixed_tier2() {
 }
 
 # ══════════════════════════════════════════════
-# Test 12: Inter-tool compatibility — OpenTelemetry Collector + cert-manager
-#   OpenTelemetry Collector 0.129 requires cert-manager >= 1.0
+# Test 12: OpenTelemetry Operator + cert-manager co-discovery
+#   The scanner's lexical ordering checks cert-manager -> Operator, not the
+#   reverse Operator -> cert-manager dependency; direct graph tests cover that edge.
 #   cert-manager 1.17 is compatible with K8s 1.32
-#   Both should be discovered and inter-tool compatibility should pass
+#   Both should be discovered with no known incompatibilities; this does not
+#   validate the Operator dependency or a running webhook installation.
 # ══════════════════════════════════════════════
-test_inter_tool_compatibility() {
+test_opentelemetry_operator_codiscovery() {
     echo ""
     echo "========================================="
-    echo "TEST 12: Inter-tool compatibility (OTel Collector + cert-manager)"
+    echo "TEST 12: Co-discovery (OTel Operator + cert-manager)"
     echo "========================================="
 
     install_cert_manager "v1.17.2"
-    install_opentelemetry_kubectl "0.129.0"
+    install_opentelemetry_operator_fixture "0.129.1"
 
     run_k8mpatible
 
-    assert_exit_code 0 "OTel + cert-manager should produce exit code 0 (inter-tool compatible)"
+    assert_exit_code 0 "OTel Operator + cert-manager co-discovery should produce exit code 0"
     assert_output_contains "opentelemetry" "Output should list opentelemetry as a discovered tool"
     assert_output_contains "cert-manager" "Output should list cert-manager as a discovered tool"
-    assert_output_not_contains "current_incompatibility" "No current incompatibilities expected between OTel and cert-manager"
+    assert_output_contains "^[[:space:]]*incompatibleTools: 0$" "No current incompatibilities expected between OTel and cert-manager"
 
-    uninstall_opentelemetry_kubectl
+    uninstall_opentelemetry_operator_fixture
     uninstall_cert_manager
 }
 
@@ -559,10 +579,10 @@ main() {
     test_mixed_tier1
     test_velero_compatible
     test_gatekeeper_incompatible
-    test_jaeger_incompatible
-    test_opentelemetry_compatible
+    test_jaeger_unknown
+    test_opentelemetry_unknown
     test_mixed_tier2
-    test_inter_tool_compatibility
+    test_opentelemetry_operator_codiscovery
 
     echo ""
     echo "========================================="

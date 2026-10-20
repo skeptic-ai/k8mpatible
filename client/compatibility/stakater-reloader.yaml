@@ -1,3 +1,13 @@
+# Research: 2026-10-20. Application/image minors, not Helm chart versions.
+# Source: https://github.com/stakater/Reloader?tab=readme-ov-file#compatibility
+# Tagged policy: https://raw.githubusercontent.com/stakater/Reloader/v1.3.0/README.md
+# Current policy: https://raw.githubusercontent.com/stakater/Reloader/master/README.md
+# Releases: https://github.com/stakater/Reloader/releases/tag/v1.4.22
+# Upstream says "Reloader is compatible with Kubernetes >= 1.19". This open
+# range is minimum-only POLICY, not a tested matrix; 1.35/1.36 are policy-covered
+# but individually undocumented as tested in these sources. Remove invented 1.34 cap.
+# Latest stable application is 1.4.22. v2.0.0-beta.1 is a prerelease, deliberately
+# excluded; chart-v2.x releases are Helm versions, not missing application minors.
 nodes:
   - name: stakater-reloader
     docUrl: https://github.com/stakater/Reloader?tab=readme-ov-file#compatibility
@@ -10,12 +20,12 @@ nodes:
         image: reloader
 edges:
   - source: stakater-reloader
-    sourceVersion: 1.3
+    sourceVersion: "1.3"
     destination: Kubernetes
-    versionRange: ">=1.19, <=1.34"
+    versionRange: ">=1.19"
     compatible: true
   - source: stakater-reloader
-    sourceVersion: 1.4
+    sourceVersion: "1.4"
     destination: Kubernetes
-    versionRange: ">=1.19, <=1.34"
+    versionRange: ">=1.19"
     compatible: true

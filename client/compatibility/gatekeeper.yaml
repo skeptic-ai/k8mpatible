@@ -1,3 +1,20 @@
+# Research refreshed 2026-10-20; latest release: v3.23.1.
+# https://github.com/open-policy-agent/gatekeeper/releases/tag/v3.23.1
+# Checked docUrl: Kubernetes 1.16 is an API-resource floor, NOT a tested matrix.
+# Historical positive ranges below use the Kubernetes minors configured in
+# each v3.<minor>.0 tag's .github/workflows/workflow.yaml, not an invented N-2
+# sliding range. These are upstream CI targets, not successful test results.
+# https://github.com/open-policy-agent/gatekeeper/blob/v3.23.1/.github/workflows/workflow.yaml
+# https://github.com/open-policy-agent/gatekeeper/blob/v3.13.0/.github/workflows/workflow.yaml
+# Supported Gatekeeper branches are current and previous (3.23 and 3.22).
+# Upstream ASSUMES those branches work with currently supported Kubernetes.
+# https://github.com/open-policy-agent/gatekeeper/blob/v3.23.1/docs/Release_Management.md#supported-kubernetes-versions
+# Active Kubernetes branches include 1.34 in maintenance until 2026-10-27,
+# as well as 1.35-1.37; the policy links active branches, not only the newest three.
+# https://kubernetes.io/releases/patch-releases/#detailed-release-history-for-active-branches
+# Kubernetes 1.34-1.37: covered for 3.22/3.23 by that support-policy
+# assumption, NOT their pinned CI matrix (1.31.6, 1.32.3, 1.33.2).
+# Earlier Gatekeeper minors: no 1.35/1.36 evidence found; no negative edges.
 nodes:
   - name: gatekeeper
     docUrl: https://open-policy-agent.github.io/gatekeeper/website/docs/install/
@@ -10,57 +27,69 @@ nodes:
           app.kubernetes.io/name: gatekeeper
         image: openpolicyagent/gatekeeper
 edges:
-  # OPA Gatekeeper compatibility with Kubernetes
-  # Gatekeeper supports all currently supported Kubernetes versions (N-2 policy)
-  # https://open-policy-agent.github.io/gatekeeper/website/docs/install/
-  # https://endoflife.date/gatekeeper
   - source: gatekeeper
-    sourceVersion: 3.22
+    sourceVersion: "3.23"
     destination: Kubernetes
-    versionRange: ">=1.30, <=1.35"
+    versionRange: ">=1.31, <1.38"
     compatible: true
+    reason: "Upstream CI targets 1.31-1.33; 1.34-1.37 are a current support-policy assumption, not tested versions."
   - source: gatekeeper
-    sourceVersion: 3.21
+    sourceVersion: "3.22"
     destination: Kubernetes
-    versionRange: ">=1.29, <=1.35"
+    versionRange: ">=1.31, <1.38"
     compatible: true
+    reason: "Upstream CI targets 1.31-1.33; 1.34-1.37 are a current support-policy assumption, not tested versions."
   - source: gatekeeper
-    sourceVersion: 3.20
+    sourceVersion: "3.21"
     destination: Kubernetes
-    versionRange: ">=1.28, <=1.34"
+    versionRange: ">=1.31, <1.34"
     compatible: true
+    reason: "Kubernetes minors configured in the v3.21.0 upstream CI matrix."
   - source: gatekeeper
-    sourceVersion: 3.19
+    sourceVersion: "3.20"
     destination: Kubernetes
-    versionRange: ">=1.27, <=1.33"
+    versionRange: ">=1.30, <1.34"
     compatible: true
+    reason: "Kubernetes minors configured in the v3.20.0 upstream CI matrix."
   - source: gatekeeper
-    sourceVersion: 3.18
+    sourceVersion: "3.19"
     destination: Kubernetes
-    versionRange: ">=1.26, <=1.32"
+    versionRange: ">=1.29, <1.32"
     compatible: true
+    reason: "Kubernetes minors configured in the v3.19.0 upstream CI matrix."
   - source: gatekeeper
-    sourceVersion: 3.17
+    sourceVersion: "3.18"
     destination: Kubernetes
-    versionRange: ">=1.25, <=1.31"
+    versionRange: ">=1.29, <1.32"
     compatible: true
+    reason: "Kubernetes minors configured in the v3.18.0 upstream CI matrix."
   - source: gatekeeper
-    sourceVersion: 3.16
+    sourceVersion: "3.17"
     destination: Kubernetes
-    versionRange: ">=1.24, <=1.30"
+    versionRange: ">=1.27, <1.31"
     compatible: true
+    reason: "Kubernetes minors configured in the v3.17.0 upstream CI matrix."
   - source: gatekeeper
-    sourceVersion: 3.15
+    sourceVersion: "3.16"
     destination: Kubernetes
-    versionRange: ">=1.23, <=1.29"
+    versionRange: ">=1.26, <1.30"
     compatible: true
+    reason: "Kubernetes minors configured in the v3.16.0 upstream CI matrix."
   - source: gatekeeper
-    sourceVersion: 3.14
+    sourceVersion: "3.15"
     destination: Kubernetes
-    versionRange: ">=1.22, <=1.28"
+    versionRange: ">=1.25, <1.29"
     compatible: true
+    reason: "Kubernetes minors configured in the v3.15.0 upstream CI matrix."
   - source: gatekeeper
-    sourceVersion: 3.13
+    sourceVersion: "3.14"
     destination: Kubernetes
-    versionRange: ">=1.21, <=1.27"
+    versionRange: ">=1.25, <1.29"
     compatible: true
+    reason: "Kubernetes minors configured in the v3.14.0 upstream CI matrix."
+  - source: gatekeeper
+    sourceVersion: "3.13"
+    destination: Kubernetes
+    versionRange: ">=1.24, <1.28"
+    compatible: true
+    reason: "Kubernetes minors configured in the v3.13.0 upstream CI matrix."
