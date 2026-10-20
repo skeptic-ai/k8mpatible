@@ -129,7 +129,7 @@ func TestLatestReleaseKubernetesCoverage(t *testing.T) {
 		want135, want136    int
 	}{
 		{"argocd", "argocd", "3.5.5", Compatible, Compatible},
-		{"argoworkflows", "argoworkflows", "4.1.5", NotCompatible, Compatible},
+		{"argoworkflows", "argoworkflows", "4.1.5", Compatible, Compatible},
 		{"aws-lb-controller", "aws-load-balancer-controller", "3.6.0", Compatible, Compatible},
 		{"cert-manager", "cert-manager", "1.21.2", Compatible, Compatible},
 		{"cilium", "cilium", "1.20.3", Compatible, Compatible},

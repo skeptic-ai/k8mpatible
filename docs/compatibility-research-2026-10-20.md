@@ -39,12 +39,12 @@ Evidence (continued): [13]
 
 Latest released version found: **v4.1.5**.[14][15][16]
 
-- **Kubernetes 1.35:** Undocumented/untested in release-4.1 tested list; no interpolation between 1.34 and 1.36.[14][15][16]
+- **Kubernetes 1.35:** Compatible with Argo Workflows 4.1 under the maintainer-requested continuous envelope between its tested Kubernetes 1.34 and 1.36 endpoints; not a claim of direct 1.35 testing.[14][15][16]
 - **Kubernetes 1.36:** 4.1 explicitly tests v1.36.2; encoded 1.36 minor. Older retained minors do not document 1.36.[14][15][16]
 
 Changes:
 - Added stable minor 4.1.
-- Replaced interpolated 3.6/3.7/4.0 ranges with OR constraints for explicitly tested endpoint minors; preserved all three supported 3.5 minors. Quoted versions and used exclusive bounds.
+- Use continuous compatibility envelopes between tested endpoints for every retained minor: 4.1 = 1.34-1.36; 4.0/3.7 = 1.31-1.33; 3.6 = 1.28-1.31; 3.5 = 1.28-1.30. This maintainer-requested interpretation includes intervening minors without claiming individual test runs. Quoted versions and used exclusive bounds.
 
 Limitations:
 - CI lists exact patches (4.1: 1.34.9 and 1.36.2); graph models minor-level compatibility, not exhaustive patch testing.
