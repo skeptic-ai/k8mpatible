@@ -1,3 +1,9 @@
+# Researched 2026-10-20: latest numbered release 2.20 (2026-06-23).
+# https://linkerd.io/2026/06/23/announcing-linkerd-2.20/
+# Source for every range: https://linkerd.io/2-edge/reference/k8s-versions/
+# Kubernetes 1.35: supported by 2.19 and 2.20; 1.36: outside the documented
+# maximum (1.35), so no 1.36 support is claimed. Edge releases are not 2.x minors.
+# Corrected 2.12 maximum to 1.24 (previous 1.28 was unsupported by the table).
 nodes:
   - name: Linkerd
     docUrl: https://linkerd.io/2-edge/reference/k8s-versions/
@@ -11,42 +17,47 @@ nodes:
 
 edges:
   - source: Linkerd
-    sourceVersion: 2.19
+    sourceVersion: "2.20"
     destination: Kubernetes
-    versionRange: ">=1.22, <=1.34"
+    versionRange: ">=1.31, <1.36"
     compatible: true
   - source: Linkerd
-    sourceVersion: 2.18
+    sourceVersion: "2.19"
     destination: Kubernetes
-    versionRange: ">=1.22, <=1.32"
+    versionRange: ">=1.22, <1.36"
     compatible: true
   - source: Linkerd
-    sourceVersion: 2.17
+    sourceVersion: "2.18"
     destination: Kubernetes
-    versionRange: ">=1.22, <=1.31"
+    versionRange: ">=1.22, <1.33"
     compatible: true
   - source: Linkerd
-    sourceVersion: 2.16
+    sourceVersion: "2.17"
     destination: Kubernetes
-    versionRange: ">=1.22, <=1.29"
+    versionRange: ">=1.22, <1.32"
     compatible: true
   - source: Linkerd
-    sourceVersion: 2.15
+    sourceVersion: "2.16"
     destination: Kubernetes
-    versionRange: ">=1.22, <=1.29"
+    versionRange: ">=1.22, <1.30"
     compatible: true
   - source: Linkerd
-    sourceVersion: 2.14
+    sourceVersion: "2.15"
     destination: Kubernetes
-    versionRange: ">=1.21, <=1.28"
+    versionRange: ">=1.22, <1.30"
     compatible: true
   - source: Linkerd
-    sourceVersion: 2.13
+    sourceVersion: "2.14"
     destination: Kubernetes
-    versionRange: ">=1.21, <=1.28"
+    versionRange: ">=1.21, <1.29"
     compatible: true
   - source: Linkerd
-    sourceVersion: 2.12
+    sourceVersion: "2.13"
     destination: Kubernetes
-    versionRange: ">=1.21, <=1.28"
+    versionRange: ">=1.21, <1.29"
+    compatible: true
+  - source: Linkerd
+    sourceVersion: "2.12"
+    destination: Kubernetes
+    versionRange: ">=1.21, <1.25"
     compatible: true

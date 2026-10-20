@@ -10,50 +10,69 @@ nodes:
           app.kubernetes.io/component: admission-controller
         image: kyverno
 edges:
-  # Kyverno compatibility with Kubernetes — N-2 support policy
+  # Researched 2026-10-20: current releases plus official archived matrices; latest v1.19.1.
+  # https://kyverno.io/docs/installation/releases/
+  # https://github.com/kyverno/kyverno/releases/tag/v1.19.1
+  # Kubernetes 1.35: Kyverno 1.17-1.19; no published 1.36 support found, including 1.19.
+  # Do not infer 1.36 from release cadence or policy; unlisted is unknown, not incompatible.
+  # Historical/EOL matrices are retained; inclusive maxima cover all patches.
   # https://kyverno.io/docs/installation/releases/
   - source: kyverno
-    sourceVersion: 1.18
+    sourceVersion: "1.19"
     destination: Kubernetes
-    versionRange: ">=1.33, <=1.35"
+    versionRange: ">=1.33, <1.36"
     compatible: true
+  # https://raw.githubusercontent.com/kyverno/website/049be5c9e8d7af5cac074f2a4b7cb0603001a295/src/content/docs/docs/installation/releases.md
   - source: kyverno
-    sourceVersion: 1.17
+    sourceVersion: "1.18"
     destination: Kubernetes
-    versionRange: ">=1.32, <=1.34"
+    versionRange: ">=1.33, <1.36"
     compatible: true
+  # https://release-1-18-0.kyverno.io/docs/installation/releases/
   - source: kyverno
-    sourceVersion: 1.16
+    sourceVersion: "1.17"
     destination: Kubernetes
-    versionRange: ">=1.31, <=1.33"
+    versionRange: ">=1.32, <1.36"
     compatible: true
+  # https://release-1-17-0.kyverno.io/docs/installation/installation/
   - source: kyverno
-    sourceVersion: 1.15
+    sourceVersion: "1.16"
     destination: Kubernetes
-    versionRange: ">=1.30, <=1.33"
+    versionRange: ">=1.31, <1.35"
     compatible: true
+  # https://release-1-16-0.kyverno.io/docs/installation/
   - source: kyverno
-    sourceVersion: 1.14
+    sourceVersion: "1.15"
     destination: Kubernetes
-    versionRange: ">=1.29, <=1.32"
+    versionRange: ">=1.30, <1.34"
     compatible: true
+  # https://release-1-16-0.kyverno.io/docs/installation/
   - source: kyverno
-    sourceVersion: 1.13
+    sourceVersion: "1.14"
     destination: Kubernetes
-    versionRange: ">=1.28, <=1.31"
+    versionRange: ">=1.29, <1.33"
     compatible: true
+  # https://release-1-16-0.kyverno.io/docs/installation/
   - source: kyverno
-    sourceVersion: 1.12
+    sourceVersion: "1.13"
     destination: Kubernetes
-    versionRange: ">=1.26, <=1.29"
+    versionRange: ">=1.28, <1.32"
     compatible: true
+  # https://release-1-16-0.kyverno.io/docs/installation/
   - source: kyverno
-    sourceVersion: 1.11
+    sourceVersion: "1.12"
     destination: Kubernetes
-    versionRange: ">=1.26, <=1.28"
+    versionRange: ">=1.26, <1.30"
     compatible: true
+  # https://release-1-12-0.kyverno.io/docs/installation/
   - source: kyverno
-    sourceVersion: 1.10
+    sourceVersion: "1.11"
     destination: Kubernetes
-    versionRange: ">=1.25, <=1.27"
+    versionRange: ">=1.25, <1.29"
+    compatible: true
+  # https://release-1-12-0.kyverno.io/docs/installation/
+  - source: kyverno
+    sourceVersion: "1.10"
+    destination: Kubernetes
+    versionRange: ">=1.24, <1.27"
     compatible: true

@@ -1,6 +1,27 @@
+# Research refreshed 2026-10-20; latest Agent / Cluster Agent: 7.84.4.
+# https://github.com/DataDog/datadog-agent/releases/tag/7.84.4
+# Both original docUrls were checked. The installation table specifies MINIMUM
+# AGENT versions for Kubernetes feature/API changes, NOT tested server ranges
+# or a minimum Kubernetes version required by each Agent release.
+# https://docs.datadoghq.com/containers/kubernetes/installation/#minimum-kubernetes-and-datadog-agent-versions
+# This file models the table's Kubernetes 1.16+ scope; 1.16 is not claimed to
+# be the absolute server minimum. Inverting its thresholds caps Agent 7.19-
+# 7.35 below 1.21, 7.36 below 1.22, 7.37-7.39 below 1.25, 7.40-7.66 below
+# 1.33. Newer Agents are not restricted to only the newest Kubernetes minor.
+# Agent 7.19-7.84 releases were verified; Cluster Agent 7.39-7.84 image tags
+# were checked separately. Docs mention Cluster Agent 7.37+, but Docker Hub
+# has no 7.37/7.38 tags: do not invent versions for the discovered image.
+# https://hub.docker.com/v2/repositories/datadog/cluster-agent/tags?page_size=100&name=7.37.
+# https://hub.docker.com/v2/repositories/datadog/cluster-agent/tags?page_size=100&name=7.38.
+# https://hub.docker.com/v2/repositories/datadog/cluster-agent/tags/7.84.4
+# Kubernetes 1.35 / 1.36 satisfy the documented 1.33+ => Agent/Cluster Agent
+# 7.67+ minimum-only policy. This is NOT evidence of per-release testing on
+# those minors; no artificial maximum is added to that open-ended policy.
+# https://docs.datadoghq.com/containers/cluster_agent/#minimum-agent-and-cluster-agent-versions
+# Matching Agent/Cluster Agent versions are recommended, not a hard dependency.
 nodes:
   - name: datadog-agent
-    docUrl: https://docs.datadoghq.com/containers/cluster_agent/#minimum-agent-and-cluster-agent-versions
+    docUrl: https://docs.datadoghq.com/containers/kubernetes/installation/#minimum-kubernetes-and-datadog-agent-versions
     kubernetesResource:
       - name: datadog-agent
         namespace: datadog
@@ -18,74 +39,680 @@ nodes:
           app.kubernetes.io/name: datadog-cluster-agent
         image: datadog/cluster-agent
 
+
 edges:
+  # datadog-agent: documented feature-minimum policy, not a CI/test matrix.
   - source: datadog-agent
-    sourceVersion: 7.67
+    sourceVersion: "7.84"
     destination: Kubernetes
-    versionRange: ">=1.33"
+    versionRange: ">=1.16"
     compatible: true
-  # Datadog Agent compatibility with Kubernetes based on official documentation
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
   - source: datadog-agent
-    sourceVersion: 7.40
+    sourceVersion: "7.83"
     destination: Kubernetes
-    versionRange: ">=1.25, <=1.32"
+    versionRange: ">=1.16"
     compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
   - source: datadog-agent
-    sourceVersion: 7.37
+    sourceVersion: "7.82"
     destination: Kubernetes
-    versionRange: ">=1.22, <=1.32"
+    versionRange: ">=1.16"
     compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
   - source: datadog-agent
-    sourceVersion: 7.36
+    sourceVersion: "7.81"
     destination: Kubernetes
-    versionRange: ">=1.21, <=1.32"
+    versionRange: ">=1.16"
     compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
   - source: datadog-agent
-    sourceVersion: 7.19
+    sourceVersion: "7.80"
     destination: Kubernetes
-    versionRange: ">=1.16, <=1.32"
+    versionRange: ">=1.16"
     compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.79"
+    destination: Kubernetes
+    versionRange: ">=1.16"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.78"
+    destination: Kubernetes
+    versionRange: ">=1.16"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.77"
+    destination: Kubernetes
+    versionRange: ">=1.16"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.76"
+    destination: Kubernetes
+    versionRange: ">=1.16"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.75"
+    destination: Kubernetes
+    versionRange: ">=1.16"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.74"
+    destination: Kubernetes
+    versionRange: ">=1.16"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.73"
+    destination: Kubernetes
+    versionRange: ">=1.16"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.72"
+    destination: Kubernetes
+    versionRange: ">=1.16"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.71"
+    destination: Kubernetes
+    versionRange: ">=1.16"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.70"
+    destination: Kubernetes
+    versionRange: ">=1.16"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.69"
+    destination: Kubernetes
+    versionRange: ">=1.16"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.68"
+    destination: Kubernetes
+    versionRange: ">=1.16"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.67"
+    destination: Kubernetes
+    versionRange: ">=1.16"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.66"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.65"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.64"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.63"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.62"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.61"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.60"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.59"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.58"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.57"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.56"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.55"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.54"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.53"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.52"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.51"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.50"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.49"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.48"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.47"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.46"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.45"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.44"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.43"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.42"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.41"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.40"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.39"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.25"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.38"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.25"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.37"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.25"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.36"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.22"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.35"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.21"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.34"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.21"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.33"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.21"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.32"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.21"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.31"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.21"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.30"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.21"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.29"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.21"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.28"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.21"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.27"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.21"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.26"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.21"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.25"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.21"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.24"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.21"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.23"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.21"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.22"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.21"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.21"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.21"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.20"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.21"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-agent
+    sourceVersion: "7.19"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.21"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
 
-  # # Datadog Cluster Agent compatibility with Kubernetes based on official documentation
-  # - source: datadog-cluster-agent
-  #   sourceVersion: 7.40.0
-  #   destination: Kubernetes
-  #   versionRange: ">=1.25, <=1.32"
-  #   compatible: true
-  # - source: datadog-cluster-agent
-  #   sourceVersion: 7.37.0
-  #   destination: Kubernetes
-  #   versionRange: ">=1.22, <=1.32"
-  #   compatible: true
-  # - source: datadog-cluster-agent
-  #   sourceVersion: 1.20.0
-  #   destination: Kubernetes
-  #   versionRange: ">=1.21, <=1.32"
-  #   compatible: true
-  # - source: datadog-cluster-agent
-  #   sourceVersion: 1.9.0
-  #   destination: Kubernetes
-  #   versionRange: ">=1.16, <=1.32"
-  #   compatible: true
-
-  # # Agent and Cluster Agent compatibility with each other based on minimum requirements
-  # - source: datadog-agent
-  #   sourceVersion: 7.40.0
-  #   destination: datadog-cluster-agent
-  #   versionRange: ">=7.40.0"
-  #   compatible: true
-  # - source: datadog-agent
-  #   sourceVersion: 7.37.0
-  #   destination: datadog-cluster-agent
-  #   versionRange: ">=7.37.0"
-  #   compatible: true
-  # - source: datadog-agent
-  #   sourceVersion: 7.36.0
-  #   destination: datadog-cluster-agent
-  #   versionRange: ">=1.20.0"
-  #   compatible: true
-  # - source: datadog-agent
-  #   sourceVersion: 7.19.0
-  #   destination: datadog-cluster-agent
-  #   versionRange: ">=1.9.0"
-  #   compatible: true
+  # datadog-cluster-agent: documented feature-minimum policy, not a CI/test matrix.
+  - source: datadog-cluster-agent
+    sourceVersion: "7.84"
+    destination: Kubernetes
+    versionRange: ">=1.16"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-cluster-agent
+    sourceVersion: "7.83"
+    destination: Kubernetes
+    versionRange: ">=1.16"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-cluster-agent
+    sourceVersion: "7.82"
+    destination: Kubernetes
+    versionRange: ">=1.16"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-cluster-agent
+    sourceVersion: "7.81"
+    destination: Kubernetes
+    versionRange: ">=1.16"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-cluster-agent
+    sourceVersion: "7.80"
+    destination: Kubernetes
+    versionRange: ">=1.16"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-cluster-agent
+    sourceVersion: "7.79"
+    destination: Kubernetes
+    versionRange: ">=1.16"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-cluster-agent
+    sourceVersion: "7.78"
+    destination: Kubernetes
+    versionRange: ">=1.16"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-cluster-agent
+    sourceVersion: "7.77"
+    destination: Kubernetes
+    versionRange: ">=1.16"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-cluster-agent
+    sourceVersion: "7.76"
+    destination: Kubernetes
+    versionRange: ">=1.16"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-cluster-agent
+    sourceVersion: "7.75"
+    destination: Kubernetes
+    versionRange: ">=1.16"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-cluster-agent
+    sourceVersion: "7.74"
+    destination: Kubernetes
+    versionRange: ">=1.16"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-cluster-agent
+    sourceVersion: "7.73"
+    destination: Kubernetes
+    versionRange: ">=1.16"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-cluster-agent
+    sourceVersion: "7.72"
+    destination: Kubernetes
+    versionRange: ">=1.16"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-cluster-agent
+    sourceVersion: "7.71"
+    destination: Kubernetes
+    versionRange: ">=1.16"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-cluster-agent
+    sourceVersion: "7.70"
+    destination: Kubernetes
+    versionRange: ">=1.16"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-cluster-agent
+    sourceVersion: "7.69"
+    destination: Kubernetes
+    versionRange: ">=1.16"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-cluster-agent
+    sourceVersion: "7.68"
+    destination: Kubernetes
+    versionRange: ">=1.16"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-cluster-agent
+    sourceVersion: "7.67"
+    destination: Kubernetes
+    versionRange: ">=1.16"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-cluster-agent
+    sourceVersion: "7.66"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-cluster-agent
+    sourceVersion: "7.65"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-cluster-agent
+    sourceVersion: "7.64"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-cluster-agent
+    sourceVersion: "7.63"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-cluster-agent
+    sourceVersion: "7.62"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-cluster-agent
+    sourceVersion: "7.61"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-cluster-agent
+    sourceVersion: "7.60"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-cluster-agent
+    sourceVersion: "7.59"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-cluster-agent
+    sourceVersion: "7.58"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-cluster-agent
+    sourceVersion: "7.57"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-cluster-agent
+    sourceVersion: "7.56"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-cluster-agent
+    sourceVersion: "7.55"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-cluster-agent
+    sourceVersion: "7.54"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-cluster-agent
+    sourceVersion: "7.53"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-cluster-agent
+    sourceVersion: "7.52"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-cluster-agent
+    sourceVersion: "7.51"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-cluster-agent
+    sourceVersion: "7.50"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-cluster-agent
+    sourceVersion: "7.49"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-cluster-agent
+    sourceVersion: "7.48"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-cluster-agent
+    sourceVersion: "7.47"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-cluster-agent
+    sourceVersion: "7.46"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-cluster-agent
+    sourceVersion: "7.45"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-cluster-agent
+    sourceVersion: "7.44"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-cluster-agent
+    sourceVersion: "7.43"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-cluster-agent
+    sourceVersion: "7.42"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-cluster-agent
+    sourceVersion: "7.41"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-cluster-agent
+    sourceVersion: "7.40"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.33"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."
+  - source: datadog-cluster-agent
+    sourceVersion: "7.39"
+    destination: Kubernetes
+    versionRange: ">=1.16, <1.25"
+    compatible: true
+    reason: "Satisfies documented Agent feature minima within the Kubernetes 1.16+ table; not a tested-version guarantee."

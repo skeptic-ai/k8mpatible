@@ -1,3 +1,10 @@
+# Researched 2026-10-20: latest stable v3.5.5; v3.6.0-rc3 is not a stable release.
+# Sources: https://github.com/argoproj/argo-cd/releases
+# https://argo-cd.readthedocs.io/en/stable/operator-manual/installation/#tested-versions
+# Historical tables: release-<minor>/docs/operator-manual/tested-kubernetes-versions.md
+# in https://github.com/argoproj/argo-cd (release-3.2 through release-2.10).
+# Kubernetes 1.35: tested with 3.3/3.4/3.5; 1.36: tested with 3.5 only.
+# Other combinations are undocumented here, not proven incompatible.
 nodes:
   - name: argocd
     docUrl: https://argo-cd.readthedocs.io/en/stable/operator-manual/installation/#tested-versions
@@ -11,47 +18,57 @@ nodes:
         image: argocd
 edges:
   - source: argocd
-    sourceVersion: 3.3
+    sourceVersion: "3.5"
     destination: Kubernetes
-    versionRange: ">=1.31, <=1.34"
+    versionRange: ">=1.33, <1.37"
     compatible: true
   - source: argocd
-    sourceVersion: 3.2
+    sourceVersion: "3.4"
     destination: Kubernetes
-    versionRange: ">=1.31, <=1.34"
+    versionRange: ">=1.32, <1.36"
     compatible: true
   - source: argocd
-    sourceVersion: 3.1
+    sourceVersion: "3.3"
     destination: Kubernetes
-    versionRange: ">=1.31, <=1.34"
+    versionRange: ">=1.32, <1.36"
     compatible: true
   - source: argocd
-    sourceVersion: 3.0
+    sourceVersion: "3.2"
     destination: Kubernetes
-    versionRange: ">=1.29, <=1.32"
+    versionRange: ">=1.31, <1.35"
     compatible: true
   - source: argocd
-    sourceVersion: 2.14
+    sourceVersion: "3.1"
     destination: Kubernetes
-    versionRange: ">=1.28, <=1.31"
+    versionRange: ">=1.31, <1.35"
     compatible: true
   - source: argocd
-    sourceVersion: 2.13
+    sourceVersion: "3.0"
     destination: Kubernetes
-    versionRange: ">=1.27, <=1.30"
+    versionRange: ">=1.29, <1.33"
     compatible: true
   - source: argocd
-    sourceVersion: 2.12
+    sourceVersion: "2.14"
     destination: Kubernetes
-    versionRange: ">=1.26, <=1.29"
+    versionRange: ">=1.28, <1.32"
     compatible: true
   - source: argocd
-    sourceVersion: 2.11
+    sourceVersion: "2.13"
     destination: Kubernetes
-    versionRange: ">=1.25, <=1.29"
+    versionRange: ">=1.27, <1.31"
     compatible: true
   - source: argocd
-    sourceVersion: 2.10
+    sourceVersion: "2.12"
     destination: Kubernetes
-    versionRange: ">=1.25, <=1.28"
+    versionRange: ">=1.26, <1.30"
+    compatible: true
+  - source: argocd
+    sourceVersion: "2.11"
+    destination: Kubernetes
+    versionRange: ">=1.25, <1.30"
+    compatible: true
+  - source: argocd
+    sourceVersion: "2.10"
+    destination: Kubernetes
+    versionRange: ">=1.25, <1.29"
     compatible: true

@@ -1,6 +1,27 @@
+# Research refreshed 2026-10-20; latest runtime release: 2.22.0 (v1 ends at 1.76).
+# https://github.com/jaegertracing/jaeger/releases/tag/v2.22.0
+# Released v2 minors: 2.0, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9,
+# 2.10, 2.11, 2.12, 2.13, 2.14, 2.15, 2.16, 2.17, 2.18, 2.19, 2.20,
+# 2.21, 2.22. The changelog pairs early v2 releases with v1 release numbers.
+# https://github.com/jaegertracing/jaeger/blob/v2.22.0/CHANGELOG.md
+# The discovered jaegertracing/jaeger image is the v2 runtime, not the operator.
+# https://www.jaegertracing.io/docs/2.22/deployment/
+# Original /docs/latest/operator/ URL was checked and returns a 404 page.
+# The retired Jaeger Operator only works with Jaeger v1; its COMPATIBILITY.md
+# is an OPERATOR matrix, so its 1.52-1.62 edges cannot describe this image.
+# https://github.com/jaegertracing/jaeger-operator/blob/main/README.md
+# https://github.com/jaegertracing/jaeger-operator/blob/main/COMPATIBILITY.md
+# v2 can use the OpenTelemetry Operator or Helm, with their own requirements.
+# https://www.jaegertracing.io/docs/2.22/deployment/kubernetes/
+# Helm chart 4.16.1 (appVersion 2.22.0) has kubeVersion >=1.21-0: a chart
+# installation minimum only, NOT a tested Kubernetes/runtime support matrix.
+# https://github.com/jaegertracing/helm-charts/blob/jaeger-4.16.1/charts/jaeger/Chart.yaml
+# Kubernetes 1.35 / 1.36: runtime support remains unknown; satisfying that
+# chart minimum is not evidence of a tested runtime range. Released minors
+# are recorded above, but no fictitious v2 or operator-derived edges are added.
 nodes:
   - name: jaeger
-    docUrl: https://www.jaegertracing.io/docs/latest/operator/
+    docUrl: https://www.jaegertracing.io/docs/latest/deployment/kubernetes/
     kubernetesResource:
       - name: jaeger
         namespace: observability
@@ -9,58 +30,4 @@ nodes:
           app: jaeger
           app.kubernetes.io/name: jaeger
         image: jaegertracing/jaeger
-edges:
-  # Jaeger Operator / Jaeger compatibility with Kubernetes
-  # Jaeger Operator supports N-2 Kubernetes versions
-  # Jaeger v2 uses OpenTelemetry Operator for deployment
-  # https://github.com/jaegertracing/jaeger-operator/blob/main/COMPATIBILITY.md
-  - source: jaeger
-    sourceVersion: 1.62
-    destination: Kubernetes
-    versionRange: ">=1.19, <=1.30"
-    compatible: true
-  - source: jaeger
-    sourceVersion: 1.61
-    destination: Kubernetes
-    versionRange: ">=1.19, <=1.30"
-    compatible: true
-  - source: jaeger
-    sourceVersion: 1.60
-    destination: Kubernetes
-    versionRange: ">=1.19, <=1.30"
-    compatible: true
-  - source: jaeger
-    sourceVersion: 1.59
-    destination: Kubernetes
-    versionRange: ">=1.19, <=1.28"
-    compatible: true
-  - source: jaeger
-    sourceVersion: 1.57
-    destination: Kubernetes
-    versionRange: ">=1.19, <=1.28"
-    compatible: true
-  - source: jaeger
-    sourceVersion: 1.56
-    destination: Kubernetes
-    versionRange: ">=1.19, <=1.28"
-    compatible: true
-  - source: jaeger
-    sourceVersion: 1.55
-    destination: Kubernetes
-    versionRange: ">=1.19, <=1.28"
-    compatible: true
-  - source: jaeger
-    sourceVersion: 1.54
-    destination: Kubernetes
-    versionRange: ">=1.19, <=1.28"
-    compatible: true
-  - source: jaeger
-    sourceVersion: 1.53
-    destination: Kubernetes
-    versionRange: ">=1.19, <=1.28"
-    compatible: true
-  - source: jaeger
-    sourceVersion: 1.52
-    destination: Kubernetes
-    versionRange: ">=1.19, <=1.28"
-    compatible: true
+edges: []

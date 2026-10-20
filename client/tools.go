@@ -46,9 +46,7 @@ func (g *Graph) CheckCompatibility(sourceName string, sourceVersion *semver.Vers
 			destIncremented := sourceVersion.IncMinor()
 			if edgeIncremented.Equal(&destIncremented) {
 				Logger.Info("Sources matched for", "range", edge.DestinationVersionRange, "version", destVersion)
-				destVersionNormalized := semver.New(destVersion.Major(), destVersion.Minor(), 0, "", "")
-				Logger.Info("Normalized version", "version", destVersionNormalized)
-				matched, err := edge.DestinationVersionRange.Validate(destVersionNormalized)
+				matched, err := edge.DestinationVersionRange.Validate(destVersion)
 
 				if len(err) > 0 {
 					// fmt.Println("error validating version range: %s", err)

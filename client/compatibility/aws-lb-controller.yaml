@@ -1,3 +1,11 @@
+# Research: 2026-10-20. Application/image minors, not Helm chart versions.
+# Source: https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/deploy/installation/#supported-kubernetes-versions
+# Releases: https://github.com/kubernetes-sigs/aws-load-balancer-controller/releases/tag/v3.6.0
+# v2.0-v2.3 have documented 1.21 ceilings; <1.22 includes 1.21 patch releases.
+# v2.4 requires 1.19+; v2.5+ requires 1.22+. Open ranges encode minimum-only
+# upstream policy, NOT a tested-version matrix. Kubernetes 1.35 and 1.36 meet
+# that policy, but version-specific testing is undocumented in these sources.
+# Feature caveat: v2.4.7 EndpointSlice support specifically requires 1.21+.
 nodes:
   - name: aws-load-balancer-controller
     docUrl: https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/deploy/installation/#supported-kubernetes-versions
@@ -10,97 +18,127 @@ nodes:
         image: aws-load-balancer-controller
 edges:
   - source: aws-load-balancer-controller
-    sourceVersion: 2.0
+    sourceVersion: "2.0"
     destination: Kubernetes
-    versionRange: ">=1.15, <=1.21"
+    versionRange: ">=1.15, <1.22"
     compatible: true
   - source: aws-load-balancer-controller
-    sourceVersion: 2.1
+    sourceVersion: "2.1"
     destination: Kubernetes
-    versionRange: ">=1.15, <=1.21"
+    versionRange: ">=1.15, <1.22"
     compatible: true
   - source: aws-load-balancer-controller
-    sourceVersion: 2.2
+    sourceVersion: "2.2"
     destination: Kubernetes
-    versionRange: ">=1.16, <=1.21"
+    versionRange: ">=1.16, <1.22"
     compatible: true
   - source: aws-load-balancer-controller
-    sourceVersion: 2.3
+    sourceVersion: "2.3"
     destination: Kubernetes
-    versionRange: ">=1.16, <=1.21"
+    versionRange: ">=1.16, <1.22"
     compatible: true
   - source: aws-load-balancer-controller
-    sourceVersion: 2.4
+    sourceVersion: "2.4"
     destination: Kubernetes
-    versionRange: ">=1.19, <=1.34"
+    versionRange: ">=1.19"
     compatible: true
   - source: aws-load-balancer-controller
-    sourceVersion: 2.5
+    sourceVersion: "2.5"
     destination: Kubernetes
-    versionRange: ">=1.22, <=1.34"
+    versionRange: ">=1.22"
     compatible: true
   - source: aws-load-balancer-controller
-    sourceVersion: 2.6
+    sourceVersion: "2.6"
     destination: Kubernetes
-    versionRange: ">=1.22, <=1.34"
+    versionRange: ">=1.22"
     compatible: true
   - source: aws-load-balancer-controller
-    sourceVersion: 2.7
+    sourceVersion: "2.7"
     destination: Kubernetes
-    versionRange: ">=1.22, <=1.34"
+    versionRange: ">=1.22"
     compatible: true
   - source: aws-load-balancer-controller
-    sourceVersion: 2.8
+    sourceVersion: "2.8"
     destination: Kubernetes
-    versionRange: ">=1.22, <=1.34"
+    versionRange: ">=1.22"
     compatible: true
   - source: aws-load-balancer-controller
-    sourceVersion: 2.9
+    sourceVersion: "2.9"
     destination: Kubernetes
-    versionRange: ">=1.22, <=1.34"
+    versionRange: ">=1.22"
     compatible: true
   - source: aws-load-balancer-controller
-    sourceVersion: 2.10
+    sourceVersion: "2.10"
     destination: Kubernetes
-    versionRange: ">=1.22, <=1.34"
+    versionRange: ">=1.22"
     compatible: true
   - source: aws-load-balancer-controller
-    sourceVersion: 2.11
+    sourceVersion: "2.11"
     destination: Kubernetes
-    versionRange: ">=1.22, <=1.34"
+    versionRange: ">=1.22"
     compatible: true
   - source: aws-load-balancer-controller
-    sourceVersion: 2.12
+    sourceVersion: "2.12"
     destination: Kubernetes
-    versionRange: ">=1.22, <=1.34"
+    versionRange: ">=1.22"
     compatible: true
   - source: aws-load-balancer-controller
-    sourceVersion: 2.13
+    sourceVersion: "2.13"
     destination: Kubernetes
-    versionRange: ">=1.22, <=1.34"
+    versionRange: ">=1.22"
     compatible: true
   - source: aws-load-balancer-controller
-    sourceVersion: 2.14
+    sourceVersion: "2.14"
     destination: Kubernetes
-    versionRange: ">=1.22, <=1.34"
+    versionRange: ">=1.22"
     compatible: true
   - source: aws-load-balancer-controller
-    sourceVersion: 2.15
+    sourceVersion: "2.15"
     destination: Kubernetes
-    versionRange: ">=1.22, <=1.34"
+    versionRange: ">=1.22"
     compatible: true
   - source: aws-load-balancer-controller
-    sourceVersion: 2.16
+    sourceVersion: "2.16"
     destination: Kubernetes
-    versionRange: ">=1.22, <=1.34"
+    versionRange: ">=1.22"
     compatible: true
   - source: aws-load-balancer-controller
-    sourceVersion: 2.17
+    sourceVersion: "2.17"
     destination: Kubernetes
-    versionRange: ">=1.22, <=1.34"
+    versionRange: ">=1.22"
     compatible: true
   - source: aws-load-balancer-controller
-    sourceVersion: 3.0
+    sourceVersion: "3.0"
     destination: Kubernetes
-    versionRange: ">=1.22, <=1.34"
+    versionRange: ">=1.22"
+    compatible: true
+  - source: aws-load-balancer-controller
+    sourceVersion: "3.1"
+    destination: Kubernetes
+    versionRange: ">=1.22"
+    compatible: true
+  - source: aws-load-balancer-controller
+    sourceVersion: "3.2"
+    destination: Kubernetes
+    versionRange: ">=1.22"
+    compatible: true
+  - source: aws-load-balancer-controller
+    sourceVersion: "3.3"
+    destination: Kubernetes
+    versionRange: ">=1.22"
+    compatible: true
+  - source: aws-load-balancer-controller
+    sourceVersion: "3.4"
+    destination: Kubernetes
+    versionRange: ">=1.22"
+    compatible: true
+  - source: aws-load-balancer-controller
+    sourceVersion: "3.5"
+    destination: Kubernetes
+    versionRange: ">=1.22"
+    compatible: true
+  - source: aws-load-balancer-controller
+    sourceVersion: "3.6"
+    destination: Kubernetes
+    versionRange: ">=1.22"
     compatible: true

@@ -1,3 +1,12 @@
+# Research: 2026-10-20. Application/image minors, not Helm chart versions.
+# Source: https://github.com/kubernetes-sigs/external-dns#kubernetes-version-compatibility
+# Releases: https://github.com/kubernetes-sigs/external-dns/releases/tag/v0.23.0
+# The official matrix explicitly accepts Kubernetes >=1.33 for ExternalDNS
+# >=0.18.x, so 1.35/1.36 are included by upstream compatibility policy, not
+# individually confirmed tests. >=0.18 also supports 1.21-1.32 (old floor fixed).
+# The same matrix rejects >=1.33 for 0.10-0.17: their old open ranges were false.
+# Only explicit matrix rejections are encoded as incompatible; <next minor
+# bounds include all patches of the last compatible/incompatible Kubernetes minor.
 nodes:
   - name: external-dns
     docUrl: https://github.com/kubernetes-sigs/external-dns
@@ -11,124 +20,215 @@ nodes:
 
 edges:
   - source: external-dns
-    sourceVersion: 0.20
+    sourceVersion: "0.23"
+    destination: Kubernetes
+    versionRange: ">=1.21"
+    compatible: true
+  - source: external-dns
+    sourceVersion: "0.23"
+    destination: Kubernetes
+    versionRange: "<1.21"
+    compatible: false
+    reason: "Upstream matrix: ExternalDNS >=0.18.x requires Kubernetes 1.21+ (EndpointSlice API)."
+  - source: external-dns
+    sourceVersion: "0.22"
+    destination: Kubernetes
+    versionRange: ">=1.21"
+    compatible: true
+  - source: external-dns
+    sourceVersion: "0.22"
+    destination: Kubernetes
+    versionRange: "<1.21"
+    compatible: false
+    reason: "Upstream matrix: ExternalDNS >=0.18.x requires Kubernetes 1.21+ (EndpointSlice API)."
+  - source: external-dns
+    sourceVersion: "0.21"
+    destination: Kubernetes
+    versionRange: ">=1.21"
+    compatible: true
+  - source: external-dns
+    sourceVersion: "0.21"
+    destination: Kubernetes
+    versionRange: "<1.21"
+    compatible: false
+    reason: "Upstream matrix: ExternalDNS >=0.18.x requires Kubernetes 1.21+ (EndpointSlice API)."
+  - source: external-dns
+    sourceVersion: "0.20"
+    destination: Kubernetes
+    versionRange: ">=1.21"
+    compatible: true
+  - source: external-dns
+    sourceVersion: "0.20"
+    destination: Kubernetes
+    versionRange: "<1.21"
+    compatible: false
+    reason: "Upstream matrix: ExternalDNS >=0.18.x requires Kubernetes 1.21+ (EndpointSlice API)."
+  - source: external-dns
+    sourceVersion: "0.19"
+    destination: Kubernetes
+    versionRange: ">=1.21"
+    compatible: true
+  - source: external-dns
+    sourceVersion: "0.19"
+    destination: Kubernetes
+    versionRange: "<1.21"
+    compatible: false
+    reason: "Upstream matrix: ExternalDNS >=0.18.x requires Kubernetes 1.21+ (EndpointSlice API)."
+  - source: external-dns
+    sourceVersion: "0.18"
+    destination: Kubernetes
+    versionRange: ">=1.21"
+    compatible: true
+  - source: external-dns
+    sourceVersion: "0.18"
+    destination: Kubernetes
+    versionRange: "<1.21"
+    compatible: false
+    reason: "Upstream matrix: ExternalDNS >=0.18.x requires Kubernetes 1.21+ (EndpointSlice API)."
+  - source: external-dns
+    sourceVersion: "0.17"
+    destination: Kubernetes
+    versionRange: ">=1.19, <1.33"
+    compatible: true
+  - source: external-dns
+    sourceVersion: "0.17"
+    destination: Kubernetes
+    versionRange: "<1.19"
+    compatible: false
+    reason: "Upstream matrix: ExternalDNS 0.10-0.17 does not support Kubernetes <=1.18."
+  - source: external-dns
+    sourceVersion: "0.17"
     destination: Kubernetes
     versionRange: ">=1.33"
+    compatible: false
+    reason: "Upstream matrix marks ExternalDNS 0.10-0.17 incompatible with Kubernetes >=1.33."
+  - source: external-dns
+    sourceVersion: "0.16"
+    destination: Kubernetes
+    versionRange: ">=1.19, <1.33"
     compatible: true
   - source: external-dns
-    sourceVersion: 0.19
+    sourceVersion: "0.16"
+    destination: Kubernetes
+    versionRange: "<1.19"
+    compatible: false
+    reason: "Upstream matrix: ExternalDNS 0.10-0.17 does not support Kubernetes <=1.18."
+  - source: external-dns
+    sourceVersion: "0.16"
     destination: Kubernetes
     versionRange: ">=1.33"
+    compatible: false
+    reason: "Upstream matrix marks ExternalDNS 0.10-0.17 incompatible with Kubernetes >=1.33."
+  - source: external-dns
+    sourceVersion: "0.15"
+    destination: Kubernetes
+    versionRange: ">=1.19, <1.33"
     compatible: true
   - source: external-dns
-    sourceVersion: 0.18
+    sourceVersion: "0.15"
+    destination: Kubernetes
+    versionRange: "<1.19"
+    compatible: false
+    reason: "Upstream matrix: ExternalDNS 0.10-0.17 does not support Kubernetes <=1.18."
+  - source: external-dns
+    sourceVersion: "0.15"
     destination: Kubernetes
     versionRange: ">=1.33"
-    compatible: true
-  - source: external-dns
-    sourceVersion: 0.17
-    destination: Kubernetes
-    versionRange: ">=1.19, <=1.32"
-    compatible: true
-  - source: external-dns
-    sourceVersion: 0.17
-    destination: Kubernetes
-    versionRange: "<=1.18"
     compatible: false
-
+    reason: "Upstream matrix marks ExternalDNS 0.10-0.17 incompatible with Kubernetes >=1.33."
   - source: external-dns
-    sourceVersion: 0.16
+    sourceVersion: "0.14"
     destination: Kubernetes
-    versionRange: ">=1.19, <=1.32"
+    versionRange: ">=1.19, <1.33"
     compatible: true
   - source: external-dns
-    sourceVersion: 0.16
+    sourceVersion: "0.14"
     destination: Kubernetes
-    versionRange: "<=1.18"
+    versionRange: "<1.19"
     compatible: false
-    reason: "Breaking change in external-dns v0.10 makes it incompatible with Kubernetes <= 1.18"
-
+    reason: "Upstream matrix: ExternalDNS 0.10-0.17 does not support Kubernetes <=1.18."
   - source: external-dns
-    sourceVersion: 0.15
+    sourceVersion: "0.14"
     destination: Kubernetes
-    versionRange: ">=1.19, <=1.32"
-    compatible: true
-  - source: external-dns
-    sourceVersion: 0.15
-    destination: Kubernetes
-    versionRange: "<=1.18"
+    versionRange: ">=1.33"
     compatible: false
-    reason: "Breaking change in external-dns v0.10 makes it incompatible with Kubernetes <= 1.18"
-
+    reason: "Upstream matrix marks ExternalDNS 0.10-0.17 incompatible with Kubernetes >=1.33."
   - source: external-dns
-    sourceVersion: 0.14
+    sourceVersion: "0.13"
     destination: Kubernetes
-    versionRange: ">=1.19, <=1.32"
+    versionRange: ">=1.19, <1.33"
     compatible: true
   - source: external-dns
-    sourceVersion: 0.14
+    sourceVersion: "0.13"
     destination: Kubernetes
-    versionRange: "<=1.18"
+    versionRange: "<1.19"
     compatible: false
-    reason: "Breaking change in external-dns v0.10 makes it incompatible with Kubernetes <= 1.18"
-
+    reason: "Upstream matrix: ExternalDNS 0.10-0.17 does not support Kubernetes <=1.18."
   - source: external-dns
-    sourceVersion: 0.13
+    sourceVersion: "0.13"
     destination: Kubernetes
-    versionRange: ">=1.19"
-    compatible: true
-  - source: external-dns
-    sourceVersion: 0.13
-    destination: Kubernetes
-    versionRange: "<=1.18"
+    versionRange: ">=1.33"
     compatible: false
-    reason: "Breaking change in external-dns v0.10 makes it incompatible with Kubernetes <= 1.18"
-
+    reason: "Upstream matrix marks ExternalDNS 0.10-0.17 incompatible with Kubernetes >=1.33."
   - source: external-dns
-    sourceVersion: 0.12
+    sourceVersion: "0.12"
     destination: Kubernetes
-    versionRange: ">=1.19"
+    versionRange: ">=1.19, <1.33"
     compatible: true
   - source: external-dns
-    sourceVersion: 0.12
+    sourceVersion: "0.12"
     destination: Kubernetes
-    versionRange: "<=1.18"
+    versionRange: "<1.19"
     compatible: false
-    reason: "Breaking change in external-dns v0.10 makes it incompatible with Kubernetes <= 1.18"
-
+    reason: "Upstream matrix: ExternalDNS 0.10-0.17 does not support Kubernetes <=1.18."
   - source: external-dns
-    sourceVersion: 0.11
+    sourceVersion: "0.12"
     destination: Kubernetes
-    versionRange: ">=1.19"
-    compatible: true
-  - source: external-dns
-    sourceVersion: 0.11
-    destination: Kubernetes
-    versionRange: "<=1.18"
+    versionRange: ">=1.33"
     compatible: false
-    reason: "Breaking change in external-dns v0.10 makes it incompatible with Kubernetes <= 1.18"
-
+    reason: "Upstream matrix marks ExternalDNS 0.10-0.17 incompatible with Kubernetes >=1.33."
   - source: external-dns
-    sourceVersion: 0.10
+    sourceVersion: "0.11"
     destination: Kubernetes
-    versionRange: ">=1.19"
+    versionRange: ">=1.19, <1.33"
     compatible: true
   - source: external-dns
-    sourceVersion: 0.10
+    sourceVersion: "0.11"
     destination: Kubernetes
-    versionRange: "<=1.18"
+    versionRange: "<1.19"
     compatible: false
-    reason: "Breaking change in external-dns v0.10 makes it incompatible with Kubernetes <= 1.18"
-
-  # External-DNS <= 0.9 compatibility
+    reason: "Upstream matrix: ExternalDNS 0.10-0.17 does not support Kubernetes <=1.18."
   - source: external-dns
-    sourceVersion: 0.9
+    sourceVersion: "0.11"
     destination: Kubernetes
-    versionRange: "<=1.21"
+    versionRange: ">=1.33"
+    compatible: false
+    reason: "Upstream matrix marks ExternalDNS 0.10-0.17 incompatible with Kubernetes >=1.33."
+  - source: external-dns
+    sourceVersion: "0.10"
+    destination: Kubernetes
+    versionRange: ">=1.19, <1.33"
     compatible: true
   - source: external-dns
-    sourceVersion: 0.9
+    sourceVersion: "0.10"
+    destination: Kubernetes
+    versionRange: "<1.19"
+    compatible: false
+    reason: "Upstream matrix: ExternalDNS 0.10-0.17 does not support Kubernetes <=1.18."
+  - source: external-dns
+    sourceVersion: "0.10"
+    destination: Kubernetes
+    versionRange: ">=1.33"
+    compatible: false
+    reason: "Upstream matrix marks ExternalDNS 0.10-0.17 incompatible with Kubernetes >=1.33."
+  - source: external-dns
+    sourceVersion: "0.9"
+    destination: Kubernetes
+    versionRange: "<1.22"
+    compatible: true
+  - source: external-dns
+    sourceVersion: "0.9"
     destination: Kubernetes
     versionRange: ">=1.22"
     compatible: false
-    reason: "External-DNS <= 0.9 is not compatible with Kubernetes >= 1.22"
+    reason: "Upstream matrix marks ExternalDNS <=0.9 incompatible with Kubernetes >=1.22."

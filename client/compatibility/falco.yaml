@@ -1,6 +1,21 @@
+# Research refreshed 2026-10-20; latest runtime release: 0.45.1.
+# https://github.com/falcosecurity/falco/releases/tag/0.45.1
+# Released runtime minors in this file's historical scope: 0.34, 0.35, 0.36,
+# 0.37, 0.38, 0.39, 0.40, 0.41, 0.42, 0.43, 0.44, 0.45.
+# https://github.com/falcosecurity/falco/releases
+# The previous docUrl was checked: its Kubernetes 1.29+ minimum belongs to
+# Falco Operator (native sidecars), NOT the falcosecurity/falco runtime image.
+# https://falco.org/docs/setup/operator/#prerequisites
+# Helm and manifest deployment remain supported; runtime compatibility also
+# depends on the Linux kernel/driver, plugins, and deployment configuration.
+# https://falco.org/docs/setup/kubernetes/
+# Kubernetes 1.35 / 1.36: no version-specific runtime support matrix found.
+# Do not translate an operator prerequisite or chart CI target into a runtime
+# support range. Removed the unsourced 0.34-0.43 ranges; 0.44/0.45 remain
+# unknown too. Empty edges mean unknown, not explicitly incompatible.
 nodes:
   - name: falco
-    docUrl: https://falco.org/docs/setup/operator/#prerequisites
+    docUrl: https://falco.org/docs/setup/kubernetes/
     kubernetesResource:
       - name: falco
         namespace: falco
@@ -8,60 +23,4 @@ nodes:
         labels:
           app.kubernetes.io/name: falco
         image: falcosecurity/falco
-edges:
-  # Falco compatibility with Kubernetes
-  # The Falco operator requires Kubernetes 1.29+ as a prerequisite.
-  # https://falco.org/docs/setup/operator/#prerequisites
-  # Falco versions prior to the operator-based deployment (pre-0.40) supported
-  # older K8s versions via manual DaemonSet deployment, but the recommended
-  # operator-based installation requires K8s 1.29+.
-  - source: falco
-    sourceVersion: 0.43
-    destination: Kubernetes
-    versionRange: ">=1.29, <=1.35"
-    compatible: true
-  - source: falco
-    sourceVersion: 0.42
-    destination: Kubernetes
-    versionRange: ">=1.29, <=1.35"
-    compatible: true
-  - source: falco
-    sourceVersion: 0.41
-    destination: Kubernetes
-    versionRange: ">=1.29, <=1.34"
-    compatible: true
-  - source: falco
-    sourceVersion: 0.40
-    destination: Kubernetes
-    versionRange: ">=1.29, <=1.34"
-    compatible: true
-  - source: falco
-    sourceVersion: 0.39
-    destination: Kubernetes
-    versionRange: ">=1.29, <=1.33"
-    compatible: true
-  - source: falco
-    sourceVersion: 0.38
-    destination: Kubernetes
-    versionRange: ">=1.29, <=1.33"
-    compatible: true
-  - source: falco
-    sourceVersion: 0.37
-    destination: Kubernetes
-    versionRange: ">=1.29, <=1.32"
-    compatible: true
-  - source: falco
-    sourceVersion: 0.36
-    destination: Kubernetes
-    versionRange: ">=1.29, <=1.32"
-    compatible: true
-  - source: falco
-    sourceVersion: 0.35
-    destination: Kubernetes
-    versionRange: ">=1.29, <=1.31"
-    compatible: true
-  - source: falco
-    sourceVersion: 0.34
-    destination: Kubernetes
-    versionRange: ">=1.29, <=1.30"
-    compatible: true
+edges: []
